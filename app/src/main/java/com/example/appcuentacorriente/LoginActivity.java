@@ -13,12 +13,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
 
-    // Las vistas de la pantalla (como los querySelector de login.js)
     private EditText etEmail;
     private EditText etPassword;
     private TextView tvMensaje;
+    private Button btnIngresar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +36,12 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        // --- Lo nuestro: buscar las vistas por su id ---
+        // --- Buscar las vistas por su id ---
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         tvMensaje = findViewById(R.id.tvMensaje);
-        Button btnIngresar = findViewById(R.id.btnIngresar);
+        btnIngresar = findViewById(R.id.btnIngresar);
 
-        // Qué hacer al tocar el botón (como el addEventListener de login.js)
         btnIngresar.setOnClickListener(v -> ingresar());
     }
 
@@ -46,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
-        // Validaciones antes de enviar nada (como el 400 de login.php si faltan datos)
+        // 1. Validar antes de enviar nada
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Email inválido");
             etEmail.requestFocus();
@@ -58,10 +61,43 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Por ahora solo mostramos que los datos están bien.
-        // En la Semana 14 acá se llama a login.php y se guarda el token.
-        tvMensaje.setText("Datos válidos para: " + email);
-        Toast.makeText(this, "Listo para iniciar sesión", Toast.LENGTH_SHORT).show();
-        etPassword.setText("");
+        // 2. Mientras espera: botón desactivado y "Cargando…" (no se envía dos veces)
+        cargando(true);
+        tvMensaje.setText("");
+
+        // 3. Pedirle el token a login.php (Retrofit lo hace en segundo plano)
+        ApiCliente.get(this).login(new LoginPedido(email, password))
+                .enqueue(new Callback<LoginRespuesta>() {
+
+                    // La API respondió (bien o con error)
+                    @Override
+                    public void onResponse(Call<LoginRespuesta> call, Response<LoginRespuesta> respuesta) {
+                        cargando(false);
+                        if (respuesta.isSuccessful() && respuesta.body() != null) {
+                            LoginRespuesta datos = respuesta.body();
+                            Sesion.guardar(LoginActivity.this, datos.token, datos.nombre);
+                            etPassword.setText("");
+                            tvMensaje.setText("Sesión iniciada: " + datos.nombre);
+                            Toast.makeText(LoginActivity.this, "¡Bienvenida!", Toast.LENGTH_SHORT).show();
+                            // Cuando Tadeo cree InicioActivity, acá se abre Inicio y se hace finish()
+                        } else {
+                            // 400 o 401: el mensaje que manda la API
+                            tvMensaje.setText(ApiCliente.mensajeDeError(respuesta));
+                        }
+                    }
+
+                    // No hubo respuesta: sin Internet o el servidor no contesta
+                    @Override
+                    public void onFailure(Call<LoginRespuesta> call, Throwable error) {
+                        cargando(false);
+                        tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
+                    }
+                });
+    }
+
+    // Activa o desactiva el botón mientras se espera la respuesta
+    private void cargando(boolean estaCargando) {
+        btnIngresar.setEnabled(!estaCargando);
+        btnIngresar.setText(estaCargando ? "Cargando…" : getString(R.string.btn_ingresar));
     }
 }
