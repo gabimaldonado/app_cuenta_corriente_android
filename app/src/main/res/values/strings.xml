@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Cuenta Corriente</string>
+    <string name="titulo_login">Iniciar sesión</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="btn_ingresar">Ingresar</string>
+</resources>
