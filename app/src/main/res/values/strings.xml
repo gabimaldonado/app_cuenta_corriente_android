@@ -5,7 +5,7 @@
     <string name="hint_password">Contraseña</string>
     <string name="btn_ingresar">Ingresar</string>
 
-    <!-- Integrante 2 Clientes y Catalogo -->
+    <!-- Clientes y Catalogo -->
     <string name="titulo_clientes">Clientas</string>
     <string name="hint_buscar_cliente">Buscar por nombre o DNI</string>
     <string name="btn_buscar">Buscar</string>
@@ -28,8 +28,8 @@
     <string name="filtro_con_stock">Con stock</string>
     <string name="filtro_sin_stock">Sin stock</string>
     <string name="estado_sin_productos">No hay prendas para mostrar</string>
-</resources>
-    <!-- Entregas a prueba (integrante 3) · NuevaEntregaActivity -->
+
+    <!-- Entregas a prueba NuevaEntregaActivity -->
     <string name="entrega_titulo_nueva">Nueva entrega</string>
     <string name="entrega_clienta_sin_elegir">Clienta: tocá una de la lista</string>
     <string name="entrega_titulo_disponibles">Prendas con stock (tocá para agregar)</string>
@@ -38,7 +38,7 @@
     <string name="entrega_nota_prueba">Las prendas a prueba no suman al saldo. Se descuentan del stock hasta que vuelvan.</string>
     <string name="entrega_btn_guardar">Guardar entrega</string>
 
-    <!-- Entregas a prueba (integrante 3) · ConfirmarEntregaActivity -->
+    <!-- Entregas a prueba ConfirmarEntregaActivity -->
     <string name="entrega_titulo_confirmar">Confirmar compra</string>
     <string name="entrega_indicacion_confirmar">Tocá una prenda para cambiar entre «Se queda» y «Devuelve».</string>
     <string name="entrega_resumen_cero">Se queda 0 · Devuelve 0</string>

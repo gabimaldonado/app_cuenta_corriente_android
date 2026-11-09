@@ -1,5 +1,6 @@
 package com.example.appcuentacorriente;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -27,6 +28,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Si ya hay un token guardado, no hace falta loguearse de nuevo
+        if (Sesion.getToken(this) != null) {
+            irAlMenu();
+            return;
+        }
+
         // --- Generado por Android Studio: no se toca ---
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
@@ -70,34 +78,38 @@ public class LoginActivity extends AppCompatActivity {
         cargando(true);
         tvMensaje.setText("");
 
-        // 3. Pedirle el token a login.php (Retrofit lo hace en segundo plano)
+        // 3. Pedirle el token a login.php
         ApiCliente.get(this).login(new LoginPedido(email, password))
                 .enqueue(new Callback<LoginRespuesta>() {
 
-                    // La API respondió (bien o con error)
                     @Override
                     public void onResponse(Call<LoginRespuesta> call, Response<LoginRespuesta> respuesta) {
                         cargando(false);
                         if (respuesta.isSuccessful() && respuesta.body() != null) {
                             LoginRespuesta datos = respuesta.body();
                             Sesion.guardar(LoginActivity.this, datos.token, datos.nombre);
-                            etPassword.setText("");
-                            tvMensaje.setText("Sesión iniciada: " + datos.nombre);
                             Toast.makeText(LoginActivity.this, "¡Bienvenida!", Toast.LENGTH_SHORT).show();
-                            // Cuando Tadeo cree InicioActivity, acá se abre Inicio y se hace finish()
+                            irAlMenu();
                         } else {
                             // 400 o 401: el mensaje que manda la API
                             tvMensaje.setText(ApiCliente.mensajeDeError(respuesta));
                         }
                     }
 
-                    // No hubo respuesta: sin Internet o el servidor no contesta
                     @Override
                     public void onFailure(Call<LoginRespuesta> call, Throwable error) {
                         cargando(false);
                         tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
                     }
                 });
+    }
+
+    // Abre la pantalla principal y cierra el login (así no queda en la pila)
+    private void irAlMenu() {
+        // PROVISORIO: abre Clientas. Cuando Tadeo suba Inicio, cambiar por InicioActivity.class
+        Intent intent = new Intent(this, ClientesActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     // Activa o desactiva el botón mientras se espera la respuesta
@@ -110,6 +122,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("mensaje", tvMensaje.getText().toString());
+        if (tvMensaje != null) {
+            outState.putString("mensaje", tvMensaje.getText().toString());
+        }
     }
 }
