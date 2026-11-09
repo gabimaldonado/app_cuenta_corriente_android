@@ -23,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ClientesActivity" />
+        <activity android:name=".AltaClienteActivity" />
+        <activity android:name=".ProductosActivity" />
     </application>
 
 </manifest>

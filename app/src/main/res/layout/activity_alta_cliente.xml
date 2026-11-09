@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/titulo_alta_cliente"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/etNombreCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:hint="@string/hint_nombre_cliente"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/etTelefonoCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:hint="@string/hint_telefono_cliente"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etDniCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:hint="@string/hint_dni_cliente"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etDireccionCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:hint="@string/hint_direccion_cliente"
+            android:inputType="textPostalAddress" />
+
+        <EditText
+            android:id="@+id/etCiudadCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:hint="@string/hint_ciudad_cliente"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etNotasCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:hint="@string/hint_notas_cliente"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/tvErrorAlta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#D32F2F"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnGuardarCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:minHeight="48dp"
+            android:text="@string/btn_guardar_cliente" />
+    </LinearLayout>
+</ScrollView>

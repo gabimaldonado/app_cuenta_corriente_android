@@ -4,4 +4,28 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Contraseña</string>
     <string name="btn_ingresar">Ingresar</string>
+
+    <!-- Integrante 2 Clientes y Catalogo -->
+    <string name="titulo_clientes">Clientas</string>
+    <string name="hint_buscar_cliente">Buscar por nombre o DNI</string>
+    <string name="btn_buscar">Buscar</string>
+    <string name="btn_nueva_clienta">Nueva Clienta</string>
+    <string name="btn_ver_catalogo">Catálogo de prendas</string>
+    <string name="estado_cargando">Cargando…</string>
+    <string name="estado_sin_clientas">No se encontraron clientas</string>
+
+    <string name="titulo_alta_cliente">Alta de Clienta</string>
+    <string name="hint_nombre_cliente">Nombre y Apellido (obligatorio)</string>
+    <string name="hint_telefono_cliente">Teléfono con cod. pais, ej: 5492976556801 (obligatorio)</string>
+    <string name="hint_dni_cliente">DNI (7 u 8 dígitos, opcional)</string>
+    <string name="hint_direccion_cliente">Direccion (opcional)</string>
+    <string name="hint_ciudad_cliente">Ciudad de Argentina (ej: Bahía Blanca, Tandil)</string>
+    <string name="hint_notas_cliente">Notas u observaciones (opcional)</string>
+    <string name="btn_guardar_cliente">Guardar clienta</string>
+
+    <string name="titulo_productos">Catálogo de Prendas</string>
+    <string name="filtro_todos">Todas</string>
+    <string name="filtro_con_stock">Con stock</string>
+    <string name="filtro_sin_stock">Sin stock</string>
+    <string name="estado_sin_productos">No hay prendas para mostrar</string>
 </resources>
