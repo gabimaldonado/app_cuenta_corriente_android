@@ -29,3 +29,20 @@
     <string name="filtro_sin_stock">Sin stock</string>
     <string name="estado_sin_productos">No hay prendas para mostrar</string>
 </resources>
+    <!-- Entregas a prueba (integrante 3) · NuevaEntregaActivity -->
+    <string name="entrega_titulo_nueva">Nueva entrega</string>
+    <string name="entrega_clienta_sin_elegir">Clienta: tocá una de la lista</string>
+    <string name="entrega_titulo_disponibles">Prendas con stock (tocá para agregar)</string>
+    <string name="entrega_titulo_elegidas">Se lleva a probar (tocá para quitar)</string>
+    <string name="entrega_total_cero">Total a prueba: $ 0</string>
+    <string name="entrega_nota_prueba">Las prendas a prueba no suman al saldo. Se descuentan del stock hasta que vuelvan.</string>
+    <string name="entrega_btn_guardar">Guardar entrega</string>
+
+    <!-- Entregas a prueba (integrante 3) · ConfirmarEntregaActivity -->
+    <string name="entrega_titulo_confirmar">Confirmar compra</string>
+    <string name="entrega_indicacion_confirmar">Tocá una prenda para cambiar entre «Se queda» y «Devuelve».</string>
+    <string name="entrega_resumen_cero">Se queda 0 · Devuelve 0</string>
+    <string name="entrega_suma_saldo_cero">Se suma al saldo: $ 0</string>
+    <string name="entrega_btn_confirmar">Confirmar y actualizar saldo</string>
+
+</resources>
