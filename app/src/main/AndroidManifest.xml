@@ -23,10 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".InicioActivity"
-			android:exported="false"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ClientesActivity" />
         <activity android:name=".AltaClienteActivity" />
@@ -37,6 +36,14 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ConfirmarEntregaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".FichaClienteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".RegistrarPagoActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>
