@@ -1,5 +1,6 @@
 package com.example.appcuentacorriente;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -84,6 +85,9 @@ public class LoginActivity extends AppCompatActivity {
                             etPassword.setText("");
                             tvMensaje.setText("Sesión iniciada: " + datos.nombre);
                             Toast.makeText(LoginActivity.this, "¡Bienvenida!", Toast.LENGTH_SHORT).show();
+
+                            LoginActivity.this.startActivity(new Intent(LoginActivity.this,InicioActivity.class));
+                            LoginActivity.this.finish();
                             // Cuando Tadeo cree InicioActivity, acá se abre Inicio y se hace finish()
                         } else {
                             // 400 o 401: el mensaje que manda la API

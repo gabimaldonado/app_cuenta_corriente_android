@@ -1,7 +1,39 @@
 <resources>
+    <!-- activity login -->
     <string name="app_name">Cuenta Corriente</string>
     <string name="titulo_login">Iniciar sesión</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Contraseña</string>
     <string name="btn_ingresar">Ingresar</string>
+
+    <!--activity inicio-->
+    <string name="header_inicio">Inicio</string>
+    <string name="titulo_total_deuda">TOTAL QUE TE DEBEN</string>
+    <string name="btn_nueva_entrega">Nueva Entrega</string>
+    <string name="btn_registrar_pago">Registrar Pago</string>
+    <string name="titulo_prendas_prueba">Prendas a prueba</string>
+    <string name="titulo_mas_deudores">Los que más te deben</string>
+    <string name="btn_ver_deudores">Ver Todos</string>
+
+    <string name="footer_inicio">Inicio</string>
+    <string name="footer_clientes">Clientes</string>
+    <string name="footer_prendas">Prendas</string>
+    <plurals name="titulo_cant_deudores">
+        <item quantity="one">Entre %1$s clienta con saldo pendiente</item>
+        <item quantity="other">Entre %1$s clientas con saldo pendiente</item>
+    </plurals>
+    <plurals name="cant_entregas_abiertas">
+        <item quantity="one">%1$s entrega abierta</item>
+        <item quantity="other">%1$s entregas abiertas</item>
+    </plurals>
+    <string name="placeholder_cargando">Cargando…</string>
+    <string name="placeholder_err_carga">Error de carga</string>
+    <string name="btn_confirmar_entrega">Confirmar ></string>
+    <plurals name="cant_prendas_entrega">
+        <item quantity="one">%1$s prenda - %2$s</item>
+        <item quantity="other">%1$s prendas - %2$s</item>
+    </plurals>
+    <string name="monto_generico">$ %1$s</string>
+
+
 </resources>
