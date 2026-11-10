@@ -8,5 +8,5 @@
         android:bottomLeftRadius="10dp" />
     <stroke
         android:width="2dp"
-        android:color="@android:color/black" />
+        android:color="@color/bg_border_color" />
 </shape>
