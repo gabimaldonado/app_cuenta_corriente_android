@@ -4,7 +4,7 @@
     <string name="err_carga">Error de carga</string>
     <string name="monto_generico">$ %1$s</string>
     <string name="footer_inicio">Inicio</string>
-    <string name="footer_clientes">Clientes</string>
+    <string name="footer_clientes">Clientas</string>
     <string name="footer_prendas">Prendas</string>
 
     <!-- activity login -->
@@ -16,11 +16,12 @@
 
     <!-- activity inicio -->
     <string name="header_inicio">Inicio</string>
+    <string name="btn_salir">Salir</string>
     <string name="titulo_total_deuda">TOTAL QUE TE DEBEN</string>
     <string name="btn_nueva_entrega">Nueva Entrega</string>
     <string name="btn_registrar_pago">Registrar Pago</string>
     <string name="titulo_prendas_prueba">Prendas a prueba</string>
-    <string name="titulo_mas_deudores">Los que más te deben</string>
+    <string name="titulo_mas_deudores">Las que más te deben</string>
     <string name="btn_ver_deudores">Ver Todos</string>
 
     <plurals name="titulo_cant_deudores">

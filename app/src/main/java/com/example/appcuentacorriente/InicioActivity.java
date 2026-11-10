@@ -10,13 +10,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +36,7 @@ public class InicioActivity extends AppCompatActivity {
     private TextView displayCantEntregas;
     private LinearLayout displayEntregas;
 
+    private Button btnSalir;
     private Button btnEntrega;
     private Button btnRegistrarPago;
     private Button btnVerClientes;
@@ -60,11 +59,7 @@ public class InicioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inicio);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        Utils.setupInsetsConPaddingOriginal(this);
 
         displayDeudaTotal = findViewById(R.id.deuda_total);
         displayDeudaTotal.setText(R.string.estado_cargando);
@@ -75,6 +70,7 @@ public class InicioActivity extends AppCompatActivity {
         displayCantEntregas.setText(R.string.estado_cargando);
         displayEntregas = findViewById(R.id.layout_entregas);
 
+        btnSalir = findViewById(R.id.btn_salir);
         btnEntrega = findViewById(R.id.btn_nueva_entrega);
         btnRegistrarPago = findViewById(R.id.btn_registrar_pago);
         btnVerClientes = findViewById(R.id.btn_ver_deudores);
@@ -85,7 +81,6 @@ public class InicioActivity extends AppCompatActivity {
         hookFuncionesBotones();
         cargarDeudores();
         cargarEntregas();
-        footerHandler.setupFooter(this);
     }
 
     private void cargarDeudores() {
@@ -94,6 +89,9 @@ public class InicioActivity extends AppCompatActivity {
             @EverythingIsNonNull
             public void onResponse(Call<RespuestaResumenDeudores> call, Response<RespuestaResumenDeudores> response) {
                 if (!response.isSuccessful() || response.body() == null) {
+                    if (response.code() == 401) {
+                        Sesion.vencida(InicioActivity.this);
+                    }
                     return;
                 }
                 RespuestaResumenDeudores respuesta = response.body();
@@ -122,7 +120,7 @@ public class InicioActivity extends AppCompatActivity {
         disp.setOrientation(LinearLayout.HORIZONTAL);
         disp.setLayoutParams(paramsVertical);
         disp.setPadding(0,10,0,0);
-        disp.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border_black,null));
+        disp.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border,null));
 
         TextView nombre = new TextView(this);
         nombre.setText(infoDeudor.nombre);
@@ -148,6 +146,9 @@ public class InicioActivity extends AppCompatActivity {
             @EverythingIsNonNull
             public void onResponse(Call<List<Entrega>> call, Response<List<Entrega>> response) {
                 if (!response.isSuccessful() || response.body() == null) {
+                    if (response.code() == 401) {
+                        Sesion.vencida(InicioActivity.this);
+                    }
                     return;
                 }
                 List<Entrega> respuesta = response.body();
@@ -174,6 +175,9 @@ public class InicioActivity extends AppCompatActivity {
             @EverythingIsNonNull
             public void onResponse(Call<Cliente> call, Response<Cliente> response) {
                 if (!response.isSuccessful() || response.body() == null) {
+                    if (response.code() == 401) {
+                        Sesion.vencida(InicioActivity.this);
+                    }
                     return;
                 }
                 Cliente respuesta = response.body();
@@ -184,7 +188,7 @@ public class InicioActivity extends AppCompatActivity {
                 dispHorizontal.setOrientation(LinearLayout.HORIZONTAL);
                 dispHorizontal.setLayoutParams(paramsVertical);
                 dispHorizontal.setPadding(0,10,0,0);
-                dispHorizontal.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border_black,null));
+                dispHorizontal.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border,null));
 
 
                 //disposicion vertical del nombre y los detalles
@@ -255,15 +259,39 @@ public class InicioActivity extends AppCompatActivity {
 
     private void hookFuncionesBotones() {
         //emergentes, no llaman a "finish"
-        btnEntrega.setOnClickListener(v -> abrirPagina(NuevaEntregaActivity.class));
-        btnRegistrarPago.setOnClickListener(v -> abrirPagina(InicioActivity.class)); //TODO, FALTA REEMPLAZAR CON LA PANTALLA DE REGISTRO DE PAGO
+        btnEntrega.setOnClickListener(v -> Utils.abrirPagina(this,NuevaEntregaActivity.class));
+        btnRegistrarPago.setOnClickListener(v -> Utils.abrirPagina(this,InicioActivity.class)); //TODO, FALTA REEMPLAZAR CON LA PANTALLA DE REGISTRO DE PAGO
 
         //abren otra pagina, llaman a finish
-        btnVerClientes.setOnClickListener(v -> footerHandler.abrirPaginaFinish(this,ClientesActivity.class));
+        btnVerClientes.setOnClickListener(v -> Utils.abrirPaginaFinish(this,ClientesActivity.class));
+        Utils.setupFooter(this);
+        btnSalir.setOnClickListener(v -> logout());
     }
 
-    private void abrirPagina(Class<?> pagina) {
-        Intent meta = new Intent(InicioActivity.this,pagina);
-        InicioActivity.this.startActivity(meta);
+    private void logout() {
+        Toast.makeText(InicioActivity.this, "Cerrando sesión...", Toast.LENGTH_SHORT).show();
+        btnSalir.setEnabled(false);
+        api.cerrarSesion().enqueue(new Callback<Void>() {
+            @Override
+            @EverythingIsNonNull
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(InicioActivity.this, "No se pudo cerrar la sesión", Toast.LENGTH_SHORT).show();
+                    btnSalir.setEnabled(true);
+                    return;
+                }
+                Sesion.cerrar(InicioActivity.this);
+                Toast.makeText(InicioActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
+                Utils.abrirPaginaFinish(InicioActivity.this,LoginActivity.class);
+            }
+
+            @Override
+            @EverythingIsNonNull
+            public void onFailure(Call<Void> call, Throwable throwable) {
+                Toast.makeText(InicioActivity.this, "No se pudo cerrar la sesión", Toast.LENGTH_SHORT).show();
+                btnSalir.setEnabled(true);
+            }
+        });
     }
+
 }

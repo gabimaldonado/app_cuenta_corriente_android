@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class ConfirmarEntregaActivity extends AppCompatActivity {
 
+    int idEntrega;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +22,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        idEntrega = getIntent().getIntExtra("idEntrega",-1);
     }
 }

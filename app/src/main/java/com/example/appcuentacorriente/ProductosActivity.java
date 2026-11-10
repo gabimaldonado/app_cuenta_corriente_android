@@ -7,6 +7,7 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class ProductosActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_productos);
+        Utils.setupInsetsConPaddingOriginal(this);
 
         rgFiltroStock = findViewById(R.id.rgFiltroStock);
         tvEstadoProductos = findViewById(R.id.tvEstadoProductos);
@@ -46,7 +49,7 @@ public class ProductosActivity extends AppCompatActivity {
         });
 
         cargarProductos(null);
-        footerHandler.setupFooter(this);
+        Utils.setupFooter(this);
     }
 
     private void cargarProductos(String stock) {
