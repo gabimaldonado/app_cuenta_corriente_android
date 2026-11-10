@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -121,6 +122,7 @@ public class InicioActivity extends AppCompatActivity {
         disp.setOrientation(LinearLayout.HORIZONTAL);
         disp.setLayoutParams(paramsVertical);
         disp.setPadding(0,10,0,0);
+        disp.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border_black,null));
 
         TextView nombre = new TextView(this);
         nombre.setText(infoDeudor.nombre);
@@ -182,6 +184,8 @@ public class InicioActivity extends AppCompatActivity {
                 dispHorizontal.setOrientation(LinearLayout.HORIZONTAL);
                 dispHorizontal.setLayoutParams(paramsVertical);
                 dispHorizontal.setPadding(0,10,0,0);
+                dispHorizontal.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border_black,null));
+
 
                 //disposicion vertical del nombre y los detalles
                 LinearLayout dispVertical = new LinearLayout(contextHere);
