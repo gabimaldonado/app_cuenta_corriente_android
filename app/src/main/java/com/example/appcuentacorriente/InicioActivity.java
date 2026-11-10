@@ -40,10 +40,6 @@ public class InicioActivity extends AppCompatActivity {
     private Button btnEntrega;
     private Button btnRegistrarPago;
     private Button btnVerClientes;
-    private Button btnFooterInicio;
-    private Button btnFooterClientes;
-    private Button btnFooterPrendas;
-
     private CuentaCorrienteApi api;
     private Resources res;
 
@@ -70,20 +66,17 @@ public class InicioActivity extends AppCompatActivity {
         });
 
         displayDeudaTotal = findViewById(R.id.deuda_total);
-        displayDeudaTotal.setText(R.string.placeholder_cargando);
+        displayDeudaTotal.setText(R.string.estado_cargando);
         displayCantDeudores = findViewById(R.id.deuda_total_cant_clientas);
-        displayCantDeudores.setText(R.string.placeholder_cargando);
+        displayCantDeudores.setText(R.string.estado_cargando);
         displayDeudores = findViewById(R.id.layout_deudores);
         displayCantEntregas = findViewById(R.id.cant_entregas_abiertas);
-        displayCantEntregas.setText(R.string.placeholder_cargando);
+        displayCantEntregas.setText(R.string.estado_cargando);
         displayEntregas = findViewById(R.id.layout_entregas);
 
         btnEntrega = findViewById(R.id.btn_nueva_entrega);
         btnRegistrarPago = findViewById(R.id.btn_registrar_pago);
         btnVerClientes = findViewById(R.id.btn_ver_deudores);
-        btnFooterInicio = findViewById(R.id.btn_inicio);
-        btnFooterClientes = findViewById(R.id.btn_clientes);
-        btnFooterPrendas = findViewById(R.id.btn_prendas);
 
         api = ApiCliente.get(this);
         res = getResources();
@@ -91,6 +84,7 @@ public class InicioActivity extends AppCompatActivity {
         hookFuncionesBotones();
         cargarDeudores();
         cargarEntregas();
+        footerHandler.setupFooter(this);
     }
 
     private void cargarDeudores() {
@@ -116,8 +110,8 @@ public class InicioActivity extends AppCompatActivity {
             @Override
             @EverythingIsNonNull
             public void onFailure(Call<RespuestaResumenDeudores> call, Throwable throwable) {
-                displayDeudaTotal.setText(R.string.placeholder_err_carga);
-                displayCantDeudores.setText(R.string.placeholder_err_carga);
+                displayDeudaTotal.setText(R.string.err_carga);
+                displayCantDeudores.setText(R.string.err_carga);
             }
         });
     }
@@ -147,33 +141,33 @@ public class InicioActivity extends AppCompatActivity {
     }
 
     private void cargarEntregas() {
-        api.getEntregas("abierta").enqueue(new Callback<List<RespuestaEntregas>>() {
+        api.getEntregas("abierta").enqueue(new Callback<List<Entrega>>() {
             @Override
             @EverythingIsNonNull
-            public void onResponse(Call<List<RespuestaEntregas>> call, Response<List<RespuestaEntregas>> response) {
+            public void onResponse(Call<List<Entrega>> call, Response<List<Entrega>> response) {
                 if (!response.isSuccessful() || response.body() == null) {
                     return;
                 }
-                List<RespuestaEntregas> respuesta = response.body();
+                List<Entrega> respuesta = response.body();
                 int cantEntregas = respuesta.size();
                 String textoCantEntregas = res.getQuantityString(R.plurals.cant_entregas_abiertas,cantEntregas,String.valueOf(cantEntregas));
                 displayCantEntregas.setText(textoCantEntregas);
-                for (RespuestaEntregas entrega: respuesta) {
+                for (Entrega entrega: respuesta) {
                     crearElementoEntrega(entrega,displayEntregas);
                 }
             }
 
             @Override
             @EverythingIsNonNull
-            public void onFailure(Call<List<RespuestaEntregas>> call, Throwable throwable) {
-                displayCantEntregas.setText(R.string.placeholder_err_carga);
+            public void onFailure(Call<List<Entrega>> call, Throwable throwable) {
+                displayCantEntregas.setText(R.string.err_carga);
             }
         });
     }
 
-    private void crearElementoEntrega(RespuestaEntregas entrega, LinearLayout parent) {
+    private void crearElementoEntrega(Entrega entrega, LinearLayout parent) {
         Context contextHere = this;
-        api.getCliente(entrega.cliente_id).enqueue(new Callback<Cliente>() {
+        api.getCliente(entrega.getCliente_id()).enqueue(new Callback<Cliente>() {
             @Override
             @EverythingIsNonNull
             public void onResponse(Call<Cliente> call, Response<Cliente> response) {
@@ -203,12 +197,12 @@ public class InicioActivity extends AppCompatActivity {
                 TextView detalles = new TextView(contextHere);
                 detalles.setLayoutParams(paramsVertical);
                 { //uso de parseo y formato de datetime para determinar el string de los detalles
-                    int cantPrendas = entrega.entrega_items.size();
+                    int cantPrendas = entrega.getEntrega_items().size();
 
                     SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                     String fechaFormateada = null;
                     try {
-                        Date fecha = parser.parse(entrega.fecha);
+                        Date fecha = parser.parse(entrega.getFecha());
                         assert fecha != null;
                         fechaFormateada = (String) DateUtils.getRelativeTimeSpanString(fecha.getTime());
                     } catch (ParseException e) {
@@ -233,7 +227,11 @@ public class InicioActivity extends AppCompatActivity {
                 Button botonConfirmar = new Button(contextHere);
                 botonConfirmar.setText(R.string.btn_confirmar_entrega);
                 botonConfirmar.setLayoutParams(paramsBoton);
-                botonConfirmar.setOnClickListener(v -> abrirPagina(InicioActivity.class)); //TODO REEMPLAZAR CON ACTIVIDAD DE CONFIRMACIÓN
+                botonConfirmar.setOnClickListener(v -> {
+                    Intent meta = new Intent(InicioActivity.this,ConfirmarEntregaActivity.class);
+                    meta.putExtra("idEntrega",entrega.getId());
+                    InicioActivity.this.startActivity(meta);
+                });
                 dispHorizontal.addView(botonConfirmar);
 
 
@@ -252,24 +250,14 @@ public class InicioActivity extends AppCompatActivity {
     }
 
     private void hookFuncionesBotones() {
-        //TODO! REEMPLAZAR LAS LLAMADAS CON LA ACTIVIDAD CORRESPONDIENTE PARA CADA BOTÓN
-
         //emergentes, no llaman a "finish"
-        btnEntrega.setOnClickListener(v -> abrirPagina(InicioActivity.class));
-        btnRegistrarPago.setOnClickListener(v -> abrirPagina(InicioActivity.class));
+        btnEntrega.setOnClickListener(v -> abrirPagina(NuevaEntregaActivity.class));
+        btnRegistrarPago.setOnClickListener(v -> abrirPagina(InicioActivity.class)); //TODO, FALTA REEMPLAZAR CON LA PANTALLA DE REGISTRO DE PAGO
 
         //abren otra pagina, llaman a finish
-        btnVerClientes.setOnClickListener(v -> abrirPaginaFinish(InicioActivity.class));
-        btnFooterInicio.setOnClickListener(v -> abrirPaginaFinish(InicioActivity.class));
-        btnFooterClientes.setOnClickListener(v -> abrirPaginaFinish(InicioActivity.class));
-        btnFooterPrendas.setOnClickListener(v -> abrirPaginaFinish(InicioActivity.class));
+        btnVerClientes.setOnClickListener(v -> footerHandler.abrirPaginaFinish(this,ClientesActivity.class));
     }
 
-    private void abrirPaginaFinish(Class<?> pagina) {
-        Intent meta = new Intent(InicioActivity.this,pagina);
-        InicioActivity.this.startActivity(meta);
-        InicioActivity.this.finish();
-    }
     private void abrirPagina(Class<?> pagina) {
         Intent meta = new Intent(InicioActivity.this,pagina);
         InicioActivity.this.startActivity(meta);

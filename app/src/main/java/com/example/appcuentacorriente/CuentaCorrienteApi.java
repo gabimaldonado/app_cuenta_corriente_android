@@ -21,6 +21,14 @@ public interface CuentaCorrienteApi {
     Call<Void> cerrarSesion();
 
     // --- Integrante 2: clientes y catálogo ---
+    @GET("clientes.php")
+    Call<List<Cliente>> obtenerClientes(@Query("buscar") String stock);
+
+    @POST("clientes.php")
+    Call<Cliente> crearCliente(@Body Cliente cliente);
+
+    @GET("productos.php")
+    Call<List <Producto>> obtenerProductos(@Query("stock")String stock);
 
     // --- Integrante 3: entregas ---
 
@@ -32,7 +40,7 @@ public interface CuentaCorrienteApi {
     Call<RespuestaResumenDeudores> getResumen();
 
     @GET("entregas.php")
-    Call<List<RespuestaEntregas>> getEntregas(@Query("estado") String estado);
+    Call<List<Entrega>> getEntregas(@Query("estado") String estado);
 
     @GET("clientes.php")
     Call<Cliente> getCliente(@Query("id") int id);

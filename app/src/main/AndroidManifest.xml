@@ -23,8 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".InicioActivity"
+			android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ClientesActivity" />
+        <activity android:name=".AltaClienteActivity" />
+        <activity android:name=".ProductosActivity" />
+        <activity
+            android:name=".NuevaEntregaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ConfirmarEntregaActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

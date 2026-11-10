@@ -213,7 +213,7 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/btn_inicio"
+                android:id="@+id/btn_footer_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:insetTop="0dp"
@@ -222,11 +222,11 @@
                 android:text="@string/footer_inicio"
                 app:cornerRadius="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_clientes"
+                app:layout_constraintEnd_toStartOf="@+id/btn_footer_clientes"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
-                android:id="@+id/btn_clientes"
+                android:id="@+id/btn_footer_clientes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:insetTop="0dp"
@@ -239,7 +239,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
-                android:id="@+id/btn_prendas"
+                android:id="@+id/btn_footer_prendas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:insetTop="0dp"
@@ -249,7 +249,7 @@
                 app:cornerRadius="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btn_clientes" />
+                app:layout_constraintStart_toEndOf="@+id/btn_footer_clientes" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

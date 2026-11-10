@@ -1,4 +1,12 @@
 <resources>
+    <!-- Generico (strings que se pueden compartir entre pantallas) -->
+    <string name="estado_cargando">Cargando…</string>
+    <string name="err_carga">Error de carga</string>
+    <string name="monto_generico">$ %1$s</string>
+    <string name="footer_inicio">Inicio</string>
+    <string name="footer_clientes">Clientes</string>
+    <string name="footer_prendas">Prendas</string>
+
     <!-- activity login -->
     <string name="app_name">Cuenta Corriente</string>
     <string name="titulo_login">Iniciar sesión</string>
@@ -6,7 +14,7 @@
     <string name="hint_password">Contraseña</string>
     <string name="btn_ingresar">Ingresar</string>
 
-    <!--activity inicio-->
+    <!-- activity inicio -->
     <string name="header_inicio">Inicio</string>
     <string name="titulo_total_deuda">TOTAL QUE TE DEBEN</string>
     <string name="btn_nueva_entrega">Nueva Entrega</string>
@@ -15,9 +23,6 @@
     <string name="titulo_mas_deudores">Los que más te deben</string>
     <string name="btn_ver_deudores">Ver Todos</string>
 
-    <string name="footer_inicio">Inicio</string>
-    <string name="footer_clientes">Clientes</string>
-    <string name="footer_prendas">Prendas</string>
     <plurals name="titulo_cant_deudores">
         <item quantity="one">Entre %1$s clienta con saldo pendiente</item>
         <item quantity="other">Entre %1$s clientas con saldo pendiente</item>
@@ -26,14 +31,49 @@
         <item quantity="one">%1$s entrega abierta</item>
         <item quantity="other">%1$s entregas abiertas</item>
     </plurals>
-    <string name="placeholder_cargando">Cargando…</string>
-    <string name="placeholder_err_carga">Error de carga</string>
     <string name="btn_confirmar_entrega">Confirmar ></string>
     <plurals name="cant_prendas_entrega">
         <item quantity="one">%1$s prenda - %2$s</item>
         <item quantity="other">%1$s prendas - %2$s</item>
     </plurals>
-    <string name="monto_generico">$ %1$s</string>
 
+    <!-- Clientes y Catalogo -->
+    <string name="titulo_clientes">Clientas</string>
+    <string name="hint_buscar_cliente">Buscar por nombre o DNI</string>
+    <string name="btn_buscar">Buscar</string>
+    <string name="btn_nueva_clienta">Nueva Clienta</string>
+    <string name="btn_ver_catalogo">Catálogo de prendas</string>
+    <string name="estado_sin_clientas">No se encontraron clientas</string>
+
+    <string name="titulo_alta_cliente">Alta de Clienta</string>
+    <string name="hint_nombre_cliente">Nombre y Apellido (obligatorio)</string>
+    <string name="hint_telefono_cliente">Teléfono con cod. pais, ej: 5492976556801 (obligatorio)</string>
+    <string name="hint_dni_cliente">DNI (7 u 8 dígitos, opcional)</string>
+    <string name="hint_direccion_cliente">Direccion (opcional)</string>
+    <string name="hint_ciudad_cliente">Ciudad de Argentina (ej: Bahía Blanca, Tandil)</string>
+    <string name="hint_notas_cliente">Notas u observaciones (opcional)</string>
+    <string name="btn_guardar_cliente">Guardar clienta</string>
+
+    <string name="titulo_productos">Catálogo de Prendas</string>
+    <string name="filtro_todos">Todas</string>
+    <string name="filtro_con_stock">Con stock</string>
+    <string name="filtro_sin_stock">Sin stock</string>
+    <string name="estado_sin_productos">No hay prendas para mostrar</string>
+
+    <!-- Entregas a prueba NuevaEntregaActivity -->
+    <string name="entrega_titulo_nueva">Nueva entrega</string>
+    <string name="entrega_clienta_sin_elegir">Clienta: tocá una de la lista</string>
+    <string name="entrega_titulo_disponibles">Prendas con stock (tocá para agregar)</string>
+    <string name="entrega_titulo_elegidas">Se lleva a probar (tocá para quitar)</string>
+    <string name="entrega_total_cero">Total a prueba: $ 0</string>
+    <string name="entrega_nota_prueba">Las prendas a prueba no suman al saldo. Se descuentan del stock hasta que vuelvan.</string>
+    <string name="entrega_btn_guardar">Guardar entrega</string>
+
+    <!-- Entregas a prueba ConfirmarEntregaActivity -->
+    <string name="entrega_titulo_confirmar">Confirmar compra</string>
+    <string name="entrega_indicacion_confirmar">Tocá una prenda para cambiar entre «Se queda» y «Devuelve».</string>
+    <string name="entrega_resumen_cero">Se queda 0 · Devuelve 0</string>
+    <string name="entrega_suma_saldo_cero">Se suma al saldo: $ 0</string>
+    <string name="entrega_btn_confirmar">Confirmar y actualizar saldo</string>
 
 </resources>
