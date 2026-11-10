@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                             LoginRespuesta datos = respuesta.body();
                             Sesion.guardar(LoginActivity.this, datos.token, datos.nombre);
                             Toast.makeText(LoginActivity.this, "¡Bienvenida!", Toast.LENGTH_SHORT).show();
+
                             irAlMenu();
                         } else {
                             // 400 o 401: el mensaje que manda la API
@@ -106,8 +107,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Abre la pantalla principal y cierra el login (así no queda en la pila)
     private void irAlMenu() {
-        // PROVISORIO: abre Clientas. Cuando Tadeo suba Inicio, cambiar por InicioActivity.class
-        Intent intent = new Intent(this, ClientesActivity.class);
+        Intent intent = new Intent(this, InicioActivity.class);
         startActivity(intent);
         finish();
     }

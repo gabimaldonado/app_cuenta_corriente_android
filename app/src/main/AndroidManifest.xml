@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".InicioActivity"
+			android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ClientesActivity" />
         <activity android:name=".AltaClienteActivity" />
         <activity android:name=".ProductosActivity" />
