@@ -8,6 +8,9 @@ public class Resumen {
     private double saldo_actual;
     private List<Pago> pagos;
 
+    private Cliente cliente;
+
+    public Cliente getCliente() { return cliente; }
     public double getTotal_compras() { return total_compras; }
     public double getTotal_pagos() { return total_pagos; }
     public double getSaldo_actual() { return saldo_actual; }
