@@ -34,6 +34,15 @@ public interface CuentaCorrienteApi {
 
     // --- Integrante 4: pagos y resumen ---
 
+    @GET("resumen.php")
+    Call<Resumen> obtenerResumenCliente(@Query("cliente_id") int clienteId);
+
+    @GET("pagos.php")
+    Call<List<Pago>> obtenerPagosCliente(@Query("cliente_id") int clienteId);
+
+    @POST("pagos.php")
+    Call<Void> registrarPago(@Body Pago nuevoPago);
+
     // --- Integrante 5: inicio ---
 
     @GET("resumen.php?deudores=1")

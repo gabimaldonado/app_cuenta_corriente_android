@@ -51,15 +51,15 @@ Trabajo Práctico Integrador N.º 2 · Aplicaciones Móviles y Cloud Computing �
 ## 3. Pantallas
 
 | Activity | Qué muestra | Desde dónde se llega | Qué datos recibe |
-|---|---|---|---|
+|---|--|---|---|
 | `LoginActivity` | Email, contraseña y botón Ingresar. Muestra «Cargando…» mientras espera y el mensaje de error de la API | Es la pantalla de inicio de la app (LAUNCHER). Si ya hay una sesión guardada, se saltea | — |
 | `ClientesActivity` | Lista de clientas activas que trae la API, con búsqueda por nombre o DNI | Botón «Ver clientas» de Inicio | — |
 | `AltaClienteActivity` | Formulario de alta de clienta (nombre, teléfono, DNI, dirección, ciudad, notas) | Botón «Nueva Clienta» de `ClientesActivity` | — · Devuelve `RESULT_OK` para que la lista se actualice |
 | `ProductosActivity` | Catálogo de prendas con precio y stock, con filtro Todas / Con stock / Sin stock | Botón «Catálogo de prendas» de `ClientesActivity` | — |
 | `NuevaEntregaActivity` | Elegir clienta y prendas con stock para llevar a prueba | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
 | `ConfirmarEntregaActivity` | Marcar cada prenda como «Se queda» o «Devuelve» y confirmar | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
-| `FichaClienteActivity` | _(PENDIENTE — Tomi)_ | Tocar una clienta en `ClientesActivity` | `id` y `nombre` de la clienta |
-| `RegistrarPagoActivity` | _(PENDIENTE — Tomi)_ | _(PENDIENTE)_ | _(PENDIENTE)_ |
+| `FichaClienteActivity` | Datos de contacto de la clienta, saldo actual destacado, historial  de pagos y acceso directo por WhatsApp | Tocar una clienta en `ClientesActivity` | `id` y `nombre` de la clienta |
+| `RegistrarPagoActivity` | Formulario de pago (monto, medio de pago, observación) con validación de saldo | Botón «Registrar Pago» de `FichaClienteActivity` | `cliente_id`, `cliente_nombre` y `saldo_actual` |
 | `InicioActivity` | _(PENDIENTE — Tadeo)_ | Desde el login, después de ingresar | — |
 
 _(PENDIENTE — agregar una o dos capturas de pantalla.)_
@@ -71,14 +71,16 @@ _(PENDIENTE — agregar una o dos capturas de pantalla.)_
 La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modificó ningún endpoint para Android. Todos los pedidos (salvo el login) viajan con el encabezado `Authorization: Bearer <token>`.
 
 | Método | Ruta | Para qué lo usa la app | Pantalla |
-|---|---|---|---|
+|---|--|---|---|
 | POST | `/api/login.php` | Ingresar: recibe el token y el nombre del usuario | `LoginActivity` |
 | DELETE | `/api/sesion.php` | Cerrar sesión (borra el token en el servidor) | `InicioActivity` (botón Salir) |
 | GET | `/api/clientes.php?buscar=` | Listar y buscar clientas | `ClientesActivity` |
 | POST | `/api/clientes.php` | Dar de alta una clienta | `AltaClienteActivity` |
 | GET | `/api/productos.php?stock=` | Listar el catálogo, con filtro por stock | `ProductosActivity` |
+| GET | `/api/resumen.php?cliente_id=` | Obtener datos de la clienta, totales, saldo actual e historial de pagos | `FichaClienteActivity` |
+| POST | `/api/pagos.php` | Registrar un nuevo pago | `RegistrarPagoActivity` |
 
-_(PENDIENTE — Juliana, Tomi y Tadeo: agregar los de entregas, ficha, pagos y resumen cuando estén conectados.)_
+_(PENDIENTE — Juliana y Tadeo: agregar los de entregas, ficha, pagos y resumen cuando estén conectados.)_
 
 ---
 
@@ -108,8 +110,11 @@ _(PENDIENTE — Tadeo: completar cuando esté funcionando.)_
   - Si no hay respuesta (modo avión o servidor caído), se muestra «No se pudo conectar con el servidor» y la app no se cierra.
   - Si un pedido responde **401** (token vencido o inválido), `Sesion.vencida()` borra la sesión, avisa y vuelve al login sin dejar pantallas viejas en la pila.
 - **Girar la pantalla no pierde datos.** El mensaje del login se guarda en `onSaveInstanceState` y se recupera al recrearse la pantalla; los campos de texto con id los conserva Android solo.
+- **Saldo calculado dinámicamente en la API.** El saldo de cada clienta se obtiene en tiempo real en `resumen.php` restando el total de pagos registrados al total de prendas confirmadas como `comprada`. De esta forma se evitan inconsistencias ante pagos parciales, ediciones o devoluciones.
+- **Actualización en vivo con `ActivityResultLauncher`.** Al abrir `RegistrarPagoActivity` desde `FichaClienteActivity`, se pasa el `cliente_id` y el `saldo_actual` por `Intent`. Cuando el pago se guarda con éxito (`201 Created`), la pantalla devuelve `RESULT_OK` y la ficha vuelve a consultar `resumen.php` para refrescar el saldo y el historial sin duplicar pantallas en la pila.
+- **Doble validación y contacto directo por WhatsApp.** Antes de enviar el `POST` a `pagos.php`, `RegistrarPagoActivity` valida en el cliente que el monto sea mayor a cero y no supere el saldo adeudado (además de manejar el `422` del servidor). Desde `FichaClienteActivity`, el botón de WhatsApp dispara un `Intent.ACTION_VIEW` hacia `wa.me` con el teléfono y el saldo actual prearmados.
 
-_(PENDIENTE — Liliana, Juliana, Tomi y Tadeo: un párrafo por decisión de su módulo.)_
+_(PENDIENTE — Liliana, Juliana y Tadeo: un párrafo por decisión de su módulo.)_
 
 ---
 
@@ -117,5 +122,7 @@ _(PENDIENTE — Liliana, Juliana, Tomi y Tadeo: un párrafo por decisión de su 
 
 - **El token se guarda sin cifrar** en `SharedPreferences`. Para una app real convendría usar almacenamiento cifrado.
 - **Salir sin conexión:** si no hay Internet o el token ya venció, el botón Salir avisa que no pudo cerrar la sesión y no vuelve al login.
+- **Historial en ficha centrado en pagos:** en `FichaClienteActivity` el listado inferior muestra el historial cronológico de pagos registrados (el total de compras confirmadas se refleja en el encabezado del saldo, sin desglosar cada prenda comprada ítem por ítem).
+- **Contacto por WhatsApp vía enlace externo:** el botón de WhatsApp abre el navegador o la app externa mediante `wa.me` con el mensaje prearmado, pero no verifica ni registra en el servidor si el mensaje fue enviado efectivamente.
 
 _(PENDIENTE — cada integrante agrega lo que no llegó a hacer o funciona a medias.)_
