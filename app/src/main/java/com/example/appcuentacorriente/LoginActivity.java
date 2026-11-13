@@ -1,7 +1,11 @@
 package com.example.appcuentacorriente;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,10 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,9 +34,27 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvMensaje;
     private Button btnIngresar;
 
+    private final ActivityResultLauncher<String> pedirPermiso =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    concedido -> Log.d("FCM", "Permiso de notificaciones: " + concedido));
+
+    private void setupNotificaciones() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            Log.d("FCM", "Token nuevo: " + token);
+        });
+        FirebaseMessaging.getInstance().subscribeToTopic("avisos");
+
+        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            pedirPermiso.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setupNotificaciones(); //para que funcione FCM
 
         // Si ya hay un token guardado, no hace falta loguearse de nuevo
         if (Sesion.getToken(this) != null) {

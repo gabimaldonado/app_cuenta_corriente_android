@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "971595973425",
+    "project_id": "cuenta-corriente-app-movil",
+    "storage_bucket": "cuenta-corriente-app-movil.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971595973425:android:3fe48768056af8c1eaa610",
+        "android_client_info": {
+          "package_name": "com.example.appcuentacorriente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArv1tmklH5wjFE7jkBIBMoQqoKbHcJDeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
