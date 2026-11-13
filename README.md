@@ -40,7 +40,11 @@ Trabajo Práctico Integrador N.º 2 · Aplicaciones Móviles y Cloud Computing �
 
 **Dónde va la URL base.** Hay una sola, en `app/src/main/java/com/example/appcuentacorriente/ApiCliente.java`, en la constante `URL_BASE`. Ya apunta a la API desplegada en Railway (por HTTPS), así que no hace falta cambiar nada para probar.
 
-**Archivo de configuración.** Para utilizar un proyecto de firebase propio para las notificaciones FCM, se necesita el archivo "google-services.json". Este se obtiene en "console.firebase.google.com" al registrar un proyecto, y se copia hacia la carpeta `app/`. Para el funcionamiento de este trabajo, se encuentra ya en el repositorio el json correspondiente al proyecto de firebase manejado por el grupo, que funciona sin modificaciones.
+**Archivo de configuración.** El proyecto visto en Github ya viene con todas las configuraciones necesarias para que las notificaciones PUSH funcionen con el backend y el proyecto de Firebase del grupo. A continuación se explica la configuración y archivos requeridos si una fuera a querer desplegar su propio proyecto de Firebase con su propio backend.
+
+Para la configuración de la aplicación móvil, se necesita el archivo "google-services.json". Este se obtiene en "console.firebase.google.com" al registrar un proyecto, y se copia hacia la carpeta `app/`
+
+Para desplegar un backend con notificaciones propio, es necesario el archivo JSON de claves de la cuenta de servicio del proyecto de Firebase previamente creado. Para obtener el mismo, uno debe ir a la pestaña de configuración del proyecto de Firebase -> "Cloud Messaging" -> "Administrar cuentas de servicio", y dentro de la nueva pestaña seleccionar la cuenta respectiva con los tres puntos -> "Administrar claves", y dentro de esa pestaña seleccionar "Agregar clave" y "Crear clave nueva". El JSON resultante deberá entonces ser cargado como variable de entorno con el nombre de "FCM_CREDENCIALES" en el servidor PHP.
 
 **Versión de Android probada.** Emulador *Medium Phone* con **Android 15 (API 35)**. La app pide como mínimo Android 7 (`minSdk 24`) y se compila con `targetSdk 37`.
 
@@ -60,7 +64,7 @@ Trabajo Práctico Integrador N.º 2 · Aplicaciones Móviles y Cloud Computing �
 | `ConfirmarEntregaActivity` | Marcar cada prenda como «Se queda» o «Devuelve» y confirmar | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
 | `FichaClienteActivity` | Datos de contacto de la clienta, saldo actual destacado, historial  de pagos y acceso directo por WhatsApp | Tocar una clienta en `ClientesActivity` | `id` y `nombre` de la clienta |
 | `RegistrarPagoActivity` | Formulario de pago (monto, medio de pago, observación) con validación de saldo | Botón «Registrar Pago» de `FichaClienteActivity` | `cliente_id`, `cliente_nombre` y `saldo_actual` |
-| `InicioActivity` | Botón de logout, saldo pendiente total entre clientas, cantidad de entregas abiertas con información básica de cada una y un bóton de «Confirmar», y cantidad de deudores con su nombre y saldo. | Desde el login, después de ingresar | — |
+| `InicioActivity` | Botón de logout, saldo pendiente total entre clientas, cantidad de entregas abiertas con información básica de cada una y un botón de «Confirmar», y cantidad de deudores con su nombre y saldo. | Desde el login, después de ingresar | — |
 
 
 _(PENDIENTE — agregar una o dos capturas de pantalla.)_
@@ -69,7 +73,7 @@ _(PENDIENTE — agregar una o dos capturas de pantalla.)_
 
 ## 4. Endpoints que usa la app
 
-La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modificó ningún endpoint para Android. Todos los pedidos (salvo el login) viajan con el encabezado `Authorization: Bearer <token>`.
+La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modificó la estructura externa de ningún endpoint para Android. Todos los pedidos (salvo el login) viajan con el encabezado `Authorization: Bearer <token>`.
 
 | Método | Ruta | Para qué lo usa la app | Pantalla |
 |---|--|---|---|
@@ -90,13 +94,14 @@ _(PENDIENTE — Juliana: agregar los de entregas, ficha y pagos cuando estén co
 
 ## 5. Servicio cloud
 
-**Cuál y por qué.** La app usa **Firebase Cloud Messaging (FCM)** para las notificaciones push. El ingreso se hace con el login propio de nuestra API (`login.php` y su token, igual que en el frontend web) y no con Firebase Authentication: así la app y la web comparten los mismos usuarios y la API no necesita cambios.
+**Cuál y por qué.** La app usa **Firebase Cloud Messaging (FCM)** para las notificaciones push. El ingreso se hace con el login propio de nuestra API (`login.php` y su token, igual que en el frontend web) y no con Firebase Authentication: así la app y la web comparten los mismos usuarios y la API no necesita cambios profundos.
 
 **Qué datos salen y hacia dónde.** Al lanzarse la aplicación, esta automáticamente registra la instalación al canal de **"avisos"** de Firebase. Para este propósito, se les comunican a los servidores de Firebase el token de instalación generado por el cliente del mismo, solicitándoles también suscribir la instalación al canal mencionado.
+Dentro del backend, cuando se envían notificaciones, se envían a los servicios de Firebase de Google los textos con el titulo de la notificación y su cuerpo, que en algunos casos contienen información superficial de la base de datos (como el nombre de una clienta que realizo un pago). Estos son entonces recibidos por todos los dispositivos registrados.
 
-**Como se envian las notificaciones.** Para este proyecto, con el propósito de evitar modificaciones en la api existente, elegimos enviar notificaciones directamente desde la consola de Firebase, donde se nos permite elegir la aplicación y el canal al cual enviar la notificación.
+**Como se envían las notificaciones.** Para este proyecto, realizamos leves cambios del lado del backend, incluyendo las dependencias requeridas para poder leer las claves de servicio de Firebase y poder comunicarse con su API HTTP V1. Internamente desde los endpoints de pagos.php, entregas.php y confirmar_entrega.php se incluyeron llamadas a una nueva función `enviarNotificacion()` que utiliza las claves previamente mencionadas para comunicarse con Firebase y enviar notificaciones a todos los dispositivos suscritos al canal "avisos".
 
-A futuro, si se fuera a modificar el backend, sería posible enviar el token de cada instalación al servidor backend de la aplicación, para que este lo guarde y lo asocie a alguna cuenta en particular, permitiendo entonces enviar notificaciones a usuarios específicos; pero por el momento esto se encuentra fuera del alcance del proyecto.
+A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar el token de cada instalación al servidor backend de la aplicación, para que este lo guarde y lo asocie a alguna cuenta en particular, permitiendo entonces enviar notificaciones a usuarios específicos; pero por el momento esto se encuentra fuera del alcance del proyecto.
 
 ---
 
