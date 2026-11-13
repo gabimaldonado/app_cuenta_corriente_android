@@ -40,7 +40,11 @@ Trabajo Práctico Integrador N.º 2 · Aplicaciones Móviles y Cloud Computing �
 
 **Dónde va la URL base.** Hay una sola, en `app/src/main/java/com/example/appcuentacorriente/ApiCliente.java`, en la constante `URL_BASE`. Ya apunta a la API desplegada en Railway (por HTTPS), así que no hace falta cambiar nada para probar.
 
-**Archivo de configuración.** _(PENDIENTE — Tadeo: `google-services.json` para las notificaciones push: dónde va (`app/`) y cómo se consigue desde la consola de Firebase.)_
+**Archivo de configuración.** El proyecto visto en Github ya viene con todas las configuraciones necesarias para que las notificaciones PUSH funcionen con el backend y el proyecto de Firebase del grupo. A continuación se explica la configuración y archivos requeridos si una fuera a querer desplegar su propio proyecto de Firebase con su propio backend.
+
+Para la configuración de la aplicación móvil, se necesita el archivo "google-services.json". Este se obtiene en "console.firebase.google.com" al registrar un proyecto, y se copia hacia la carpeta `app/`
+
+Para desplegar un backend con notificaciones propio, es necesario el archivo JSON de claves de la cuenta de servicio del proyecto de Firebase previamente creado. Para obtener el mismo, uno debe ir a la pestaña de configuración del proyecto de Firebase -> "Cloud Messaging" -> "Administrar cuentas de servicio", y dentro de la nueva pestaña seleccionar la cuenta respectiva con los tres puntos -> "Administrar claves", y dentro de esa pestaña seleccionar "Agregar clave" y "Crear clave nueva". El JSON resultante deberá entonces ser cargado como variable de entorno con el nombre de "FCM_CREDENCIALES" en el servidor PHP.
 
 **Versión de Android probada.** Emulador *Medium Phone* con **Android 15 (API 35)**. La app pide como mínimo Android 7 (`minSdk 24`) y se compila con `targetSdk 37`.
 
@@ -60,7 +64,8 @@ Trabajo Práctico Integrador N.º 2 · Aplicaciones Móviles y Cloud Computing �
 | `ConfirmarEntregaActivity` | Marcar cada prenda como «Se queda» o «Devuelve» y confirmar | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
 | `FichaClienteActivity` | Datos de contacto de la clienta, saldo actual destacado, historial  de pagos y acceso directo por WhatsApp | Tocar una clienta en `ClientesActivity` | `id` y `nombre` de la clienta |
 | `RegistrarPagoActivity` | Formulario de pago (monto, medio de pago, observación) con validación de saldo | Botón «Registrar Pago» de `FichaClienteActivity` | `cliente_id`, `cliente_nombre` y `saldo_actual` |
-| `InicioActivity` | _(PENDIENTE — Tadeo)_ | Desde el login, después de ingresar | — |
+| `InicioActivity` | Botón de logout, saldo pendiente total entre clientas, cantidad de entregas abiertas con información básica de cada una y un botón de «Confirmar», y cantidad de deudores con su nombre y saldo. | Desde el login, después de ingresar | — |
+
 
 _(PENDIENTE — agregar una o dos capturas de pantalla.)_
 
@@ -68,29 +73,35 @@ _(PENDIENTE — agregar una o dos capturas de pantalla.)_
 
 ## 4. Endpoints que usa la app
 
-La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modificó ningún endpoint para Android. Todos los pedidos (salvo el login) viajan con el encabezado `Authorization: Bearer <token>`.
+La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modificó la estructura externa de ningún endpoint para Android. Todos los pedidos (salvo el login) viajan con el encabezado `Authorization: Bearer <token>`.
 
 | Método | Ruta | Para qué lo usa la app | Pantalla |
 |---|--|---|---|
 | POST | `/api/login.php` | Ingresar: recibe el token y el nombre del usuario | `LoginActivity` |
 | DELETE | `/api/sesion.php` | Cerrar sesión (borra el token en el servidor) | `InicioActivity` (botón Salir) |
 | GET | `/api/clientes.php?buscar=` | Listar y buscar clientas | `ClientesActivity` |
+| GET | `/api/clientes.php?id=` | Buscar info de una clienta por id | `InicioActivity` (Nombre de clienta de cada entrega) |
 | POST | `/api/clientes.php` | Dar de alta una clienta | `AltaClienteActivity` |
 | GET | `/api/productos.php?stock=` | Listar el catálogo, con filtro por stock | `ProductosActivity` |
 | GET | `/api/resumen.php?cliente_id=` | Obtener datos de la clienta, totales, saldo actual e historial de pagos | `FichaClienteActivity` |
 | POST | `/api/pagos.php` | Registrar un nuevo pago | `RegistrarPagoActivity` |
+| GET | `/api/resumen.php?deudores=1` | Listar nombre y saldo de las clientas con deuda | `InicioActivity` |
+| GET | `/api/entregas.php?estado=` | Listar entregas abiertas | `InicioActivity` |
 
-_(PENDIENTE — Juliana y Tadeo: agregar los de entregas, ficha, pagos y resumen cuando estén conectados.)_
+_(PENDIENTE — Juliana: agregar los de entregas, ficha y pagos cuando estén conectados.)_
 
 ---
 
 ## 5. Servicio cloud
 
-_(PENDIENTE — Tadeo: completar cuando esté funcionando.)_
+**Cuál y por qué.** La app usa **Firebase Cloud Messaging (FCM)** para las notificaciones push. El ingreso se hace con el login propio de nuestra API (`login.php` y su token, igual que en el frontend web) y no con Firebase Authentication: así la app y la web comparten los mismos usuarios y la API no necesita cambios profundos.
 
-**Cuál y por qué.** La app usa **Firebase Cloud Messaging (FCM)** para las notificaciones push. El ingreso se hace con el login propio de nuestra API (`login.php` y su token, igual que en el frontend web) y no con Firebase Authentication: así la app y la web comparten los mismos usuarios y la API no necesita cambios.
+**Qué datos salen y hacia dónde.** Al lanzarse la aplicación, esta automáticamente registra la instalación al canal de **"avisos"** de Firebase. Para este propósito, se les comunican a los servidores de Firebase el token de instalación generado por el cliente del mismo, solicitándoles también suscribir la instalación al canal mencionado.
+Dentro del backend, cuando se envían notificaciones, se envían a los servicios de Firebase de Google los textos con el titulo de la notificación y su cuerpo, que en algunos casos contienen información superficial de la base de datos (como el nombre de una clienta que realizo un pago). Estos son entonces recibidos por todos los dispositivos registrados.
 
-**Qué datos salen y hacia dónde.** _(PENDIENTE — por ejemplo: el token de registro de FCM de la instalación, hacia los servidores de Google/Firebase; ningún dato de las clientas.)_
+**Como se envían las notificaciones.** Para este proyecto, realizamos leves cambios del lado del backend, incluyendo las dependencias requeridas para poder leer las claves de servicio de Firebase y poder comunicarse con su API HTTP V1. Internamente desde los endpoints de pagos.php, entregas.php y confirmar_entrega.php se incluyeron llamadas a una nueva función `enviarNotificacion()` que utiliza las claves previamente mencionadas para comunicarse con Firebase y enviar notificaciones a todos los dispositivos suscritos al canal "avisos".
+
+A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar el token de cada instalación al servidor backend de la aplicación, para que este lo guarde y lo asocie a alguna cuenta en particular, permitiendo entonces enviar notificaciones a usuarios específicos; pero por el momento esto se encuentra fuera del alcance del proyecto.
 
 ---
 
@@ -114,7 +125,13 @@ _(PENDIENTE — Tadeo: completar cuando esté funcionando.)_
 - **Actualización en vivo con `ActivityResultLauncher`.** Al abrir `RegistrarPagoActivity` desde `FichaClienteActivity`, se pasa el `cliente_id` y el `saldo_actual` por `Intent`. Cuando el pago se guarda con éxito (`201 Created`), la pantalla devuelve `RESULT_OK` y la ficha vuelve a consultar `resumen.php` para refrescar el saldo y el historial sin duplicar pantallas en la pila.
 - **Doble validación y contacto directo por WhatsApp.** Antes de enviar el `POST` a `pagos.php`, `RegistrarPagoActivity` valida en el cliente que el monto sea mayor a cero y no supere el saldo adeudado (además de manejar el `422` del servidor). Desde `FichaClienteActivity`, el botón de WhatsApp dispara un `Intent.ACTION_VIEW` hacia `wa.me` con el teléfono y el saldo actual prearmados.
 
-_(PENDIENTE — Liliana, Juliana y Tadeo: un párrafo por decisión de su módulo.)_
+### Pantalla de inicio
+
+- **Uso de ScrollView en vez de ListView.** Para poder customizar más a fondo la apariencia de cada elemento de las listas de entregas activas y deudores (para que tengan paridad con la página web), se optó por utilizar un ScrollView con un LinearLayout interno en vez de un ListView, y del lado del código manualmente crear los textos y la disposición deseada. Esto permitió también agregar botones discretos para la confirmación de entregas.
+- **Datos no persistentes.** Dado que los datos que se muestran en la pantalla de inicio son de resumen y solo muestran información de la api, se decidió no guardar los mismos en onSaveInstanceState. Al girar la pantalla o volver desde otra actividad, se recargan desde la api para permitir un refresco en caso de haber ocurrido algún cambio externo.
+- **Funcionalidad de Footer compartida.** La pantalla de inicio, igual que la de clientes y productos, utiliza el mismo código para conectar los botones de navegación del footer y proveerles funcionalidad. Este código, guardado en una función externa, permite que cada bóton abra su actividad correspondiente asegurándose que la pantalla activa llame a .finish() después del cambio.
+
+_(PENDIENTE — Liliana y Juliana: un párrafo por decisión de su módulo.)_
 
 ---
 
