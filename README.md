@@ -67,7 +67,15 @@ Para desplegar un backend con notificaciones propio, es necesario el archivo JSO
 | `InicioActivity` | Botón de logout, saldo pendiente total entre clientas, cantidad de entregas abiertas con información básica de cada una y un botón de «Confirmar», y cantidad de deudores con su nombre y saldo. | Desde el login, después de ingresar | — |
 
 
-_(PENDIENTE — agregar una o dos capturas de pantalla.)_
+**Capturas** (emulador Android 15):
+
+| Inicio | Ficha de la clienta | Registrar pago |
+|---|---|---|
+| <img src="capturas/01_inicio.png" width="220"> | <img src="capturas/02_ficha_clienta.png" width="220"> | <img src="capturas/03_registrar_pago.png" width="220"> |
+
+| Nueva entrega | Confirmar entrega |
+|---|---|
+| <img src="capturas/04_nueva_entrega.png" width="220"> | <img src="capturas/05_confirmar_entrega.png" width="220"> |
 
 ---
 
@@ -87,12 +95,11 @@ La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modi
 | POST | `/api/pagos.php` | Registrar un nuevo pago | `RegistrarPagoActivity` |
 | GET | `/api/resumen.php?deudores=1` | Listar nombre y saldo de las clientas con deuda | `InicioActivity` |
 | GET | `/api/entregas.php?estado=` | Listar entregas abiertas | `InicioActivity` |
-| GET | `/api/entregas.php?id=`  | Trae una entrega con sus prendas |   `ConfirmarCompra`|
-| POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
-| PUT | `/api/confirmar_entrega.php`|Cierra la entrega: indica qué ítems se queda; el resto se devuelve y vuelve al stock | `ConfirmarCompra`|
-| POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
-| GET | `/api/clientes.php` | Lista de clientas para elegir (endpoint del integrante 2)  | `NuevaEntrega`|
-| GET | `/api/productos.php?stock=con`| Lista de prendas con stock (endpoint del integrante 2)| `NuevaEntrega`|
+| GET | `/api/entregas.php?id=` | Traer una entrega con sus prendas | `ConfirmarEntregaActivity` |
+| PUT | `/api/confirmar_entrega.php` | Cerrar la entrega: indica qué ítems se queda; el resto se devuelve y vuelve al stock | `ConfirmarEntregaActivity` |
+| POST | `/api/entregas.php` | Crear una entrega: la clienta y los ids de las prendas | `NuevaEntregaActivity` |
+| GET | `/api/clientes.php` | Lista de clientas para elegir | `NuevaEntregaActivity` |
+| GET | `/api/productos.php?stock=con` | Lista de prendas con stock | `NuevaEntregaActivity` |
 
 ---
 
@@ -106,6 +113,10 @@ Dentro del backend, cuando se envían notificaciones, se envían a los servicios
 **Como se envían las notificaciones.** Para este proyecto, realizamos leves cambios del lado del backend, incluyendo las dependencias requeridas para poder leer las claves de servicio de Firebase y poder comunicarse con su API HTTP V1. Internamente desde los endpoints de pagos.php, entregas.php y confirmar_entrega.php se incluyeron llamadas a una nueva función `enviarNotificacion()` que utiliza las claves previamente mencionadas para comunicarse con Firebase y enviar notificaciones a todos los dispositivos suscritos al canal "avisos".
 
 A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar el token de cada instalación al servidor backend de la aplicación, para que este lo guarde y lo asocie a alguna cuenta en particular, permitiendo entonces enviar notificaciones a usuarios específicos; pero por el momento esto se encuentra fuera del alcance del proyecto.
+
+**Notificación recibida** después de registrar un pago:
+
+<img src="capturas/06_notificacion.png" width="370">
 
 ---
 
@@ -125,9 +136,6 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
   - Si no hay respuesta (modo avión o servidor caído), se muestra «No se pudo conectar con el servidor» y la app no se cierra.
   - Si un pedido responde **401** (token vencido o inválido), `Sesion.vencida()` borra la sesión, avisa y vuelve al login sin dejar pantallas viejas en la pila.
 - **Girar la pantalla no pierde datos.** El mensaje del login se guarda en `onSaveInstanceState` y se recupera al recrearse la pantalla; los campos de texto con id los conserva Android solo.
-- **Saldo calculado dinámicamente en la API.** El saldo de cada clienta se obtiene en tiempo real en `resumen.php` restando el total de pagos registrados al total de prendas confirmadas como `comprada`. De esta forma se evitan inconsistencias ante pagos parciales, ediciones o devoluciones.
-- **Actualización en vivo con `ActivityResultLauncher`.** Al abrir `RegistrarPagoActivity` desde `FichaClienteActivity`, se pasa el `cliente_id` y el `saldo_actual` por `Intent`. Cuando el pago se guarda con éxito (`201 Created`), la pantalla devuelve `RESULT_OK` y la ficha vuelve a consultar `resumen.php` para refrescar el saldo y el historial sin duplicar pantallas en la pila.
-- **Doble validación y contacto directo por WhatsApp.** Antes de enviar el `POST` a `pagos.php`, `RegistrarPagoActivity` valida en el cliente que el monto sea mayor a cero y no supere el saldo adeudado (además de manejar el `422` del servidor). Desde `FichaClienteActivity`, el botón de WhatsApp dispara un `Intent.ACTION_VIEW` hacia `wa.me` con el teléfono y el saldo actual prearmados.
 
 ### Pantalla de inicio
 
@@ -135,7 +143,14 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - **Datos no persistentes.** Dado que los datos que se muestran en la pantalla de inicio son de resumen y solo muestran información de la api, se decidió no guardar los mismos en onSaveInstanceState. Al girar la pantalla o volver desde otra actividad, se recargan desde la api para permitir un refresco en caso de haber ocurrido algún cambio externo.
 - **Funcionalidad de Footer compartida.** La pantalla de inicio, igual que la de clientes y productos, utiliza el mismo código para conectar los botones de navegación del footer y proveerles funcionalidad. Este código, guardado en una función externa, permite que cada bóton abra su actividad correspondiente asegurándose que la pantalla activa llame a .finish() después del cambio.
 
+### Ficha de la clienta y pagos
+
+- **Saldo calculado dinámicamente en la API.** El saldo de cada clienta se obtiene en tiempo real en `resumen.php` restando el total de pagos registrados al total de prendas confirmadas como `comprada`. De esta forma se evitan inconsistencias ante pagos parciales, ediciones o devoluciones.
+- **Actualización en vivo con `ActivityResultLauncher`.** Al abrir `RegistrarPagoActivity` desde `FichaClienteActivity`, se pasa el `cliente_id` y el `saldo_actual` por `Intent`. Cuando el pago se guarda con éxito (`201 Created`), la pantalla devuelve `RESULT_OK` y la ficha vuelve a consultar `resumen.php` para refrescar el saldo y el historial sin duplicar pantallas en la pila.
+- **Doble validación y contacto directo por WhatsApp.** Antes de enviar el `POST` a `pagos.php`, `RegistrarPagoActivity` valida en el cliente que el monto sea mayor a cero y no supere el saldo adeudado (además de manejar el `422` del servidor). Desde `FichaClienteActivity`, el botón de WhatsApp dispara un `Intent.ACTION_VIEW` hacia `wa.me` con el teléfono y el saldo actual prearmados.
+
 ### Entregas a prueba y confirmación de compra
+
 - ConfirmarEntregaActivity recibe por extra solo el id de la entrega y vuelve a pedirla a la API (GET entregas.php?id=) en lugar de recibir la entrega completa: por un extra viajan datos chicos, la información siempre es la que tiene el servidor y, como la pantalla se vuelve a pedir cada vez que se crea, sigue funcionando después de girar.
 - Las prendas arrancan todas en «Se queda» y se tocan para cambiarlas; la app no calcula ningún saldo, solo manda los ids de los ítems que se quedan y la API es la que cambia los estados y devuelve el stock en una transacción.
 - El total que se ve en pantalla es solo una vista previa. El botón se desactiva mientras se envía (no se puede confirmar dos veces) y, si la API responde 409 porque la entrega ya estaba cerrada, queda desactivado.
@@ -143,32 +158,13 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - Todos los errores de la API se muestran con el mensaje que manda el servidor (ApiCliente.mensajeDeError), un 401 vuelve al login con Sesion.vencida y, sin conexión, aparece «No se pudo conectar» sin que la app se cierre.
 - Al girar la pantalla, NuevaEntregaActivity conserva la clienta y las prendas elegidas con onSaveInstanceState, y ConfirmarEntregaActivity conserva cuáles prendas estaban marcadas como «Devuelve».
 
-## Módulo Clientes y Catálogo — Integrante 2 (Liliana)
+### Clientas y catálogo
 
-### Pantallas implementadas
+- **La lista se recarga sola después de un alta.** `ClientesActivity` abre `AltaClienteActivity` con `ActivityResultLauncher`; si el alta sale bien, vuelve con `RESULT_OK` y la lista se pide de nuevo a la API.
+- **La búsqueda y el filtro los hace la API.** El buscador manda `?buscar=` a `clientes.php` y el filtro del catálogo (Todas / Con stock / Sin stock) manda `?stock=` a `productos.php`, igual que la web: la app no filtra listas en el teléfono.
+- **Doble validación en el alta.** Antes de enviar se controla que el nombre no esté vacío, que el teléfono tenga de 10 a 15 dígitos con código de país y que el DNI, si se carga, tenga 7 u 8 dígitos. Los errores de la API (DNI repetido, ciudad que no existe, 422) se muestran con `ApiCliente.mensajeDeError()`.
+- **Girar la pantalla y doble envío (R5).** El alta conserva lo escrito y el mensaje de error con `onSaveInstanceState`, y el botón Guardar se desactiva mientras espera la respuesta.
 
-- **`ClientesActivity` (`activity_clientes.xml`)**
-  - Muestra el listado de clientas activas en un `ListView` a partir del modelo `Cliente.java`, con indicador de estado (`«Cargando…»`) mientras responde la API.
-  - Incluye buscador por nombre o DNI (`?buscar=`) y botones para ir al alta de clienta o al catálogo de prendas.
-  - Al seleccionar una clienta de la lista, abre `FichaClienteActivity` enviando su `id` (y `nombre`) como extra en el `Intent`.
-  - Utiliza `ActivityResultLauncher` para recargar automáticamente el listado al volver de `AltaClienteActivity` con `RESULT_OK`.
-
-- **`AltaClienteActivity` (`activity_alta_cliente.xml`)**
-  - Formulario de registro con validación previa en el cliente antes de enviar: nombre obligatorio, teléfono numérico de 10 a 15 dígitos con código de país y DNI opcional de 7 u 8 dígitos.
-  - Envía los datos mediante `POST` y muestra en pantalla los mensajes de error devueltos por la API a través de `ApiCliente.mensajeDeError(response)` (incluyendo `409`/`400` por DNI duplicado y `422` por ciudad inexistente).
-  - **Requisito R5 (rotación y doble envío):** conserva lo escrito y el mensaje de error visible ante giros de pantalla (`onSaveInstanceState`) y deshabilita el botón de guardado mientras la petición está en curso para evitar envíos duplicados.
-
-- **`ProductosActivity` (`activity_productos.xml`)**
-  - Muestra el catálogo de prendas (`Producto.java`: descripción, talle, color, precio y stock) en un `ListView` con indicador de carga.
-  - Incorpora un `RadioGroup` para filtrar por disponibilidad en la API: **Todas**, **Con stock** y **Sin stock**.
-
-### Endpoints utilizados (`CuentaCorrienteApi.java`)
-
-- `GET api/clientes.php` — Listado general de clientas activas.
-- `GET api/clientes.php?buscar={texto}` — Búsqueda de clientas por nombre o DNI.
-- `POST api/clientes.php` — Alta de una nueva clienta (con geocodificación de ciudad en backend).
-- `GET api/productos.php` — Listado completo del catálogo de prendas.
-- `GET api/productos.php?stock={con|sin}` — Filtrado de prendas con stock disponible (`con`) o sin stock (`sin`).
 ---
 
 ## 7. Limitaciones conocidas
@@ -181,6 +177,3 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - En **Confirmar compra** las prendas se identifican por su número y su precio, no por su nombre.
 - En **Nueva entrega** las listas de clientas y prendas no tienen buscador: si hubiera muchas, hay que desplazarse.
 - **La confirmación es de todo o nada:** se decide el destino de todas las prendas de la entrega a la vez.
-
-
-_(PENDIENTE — cada integrante agrega lo que no llegó a hacer o funciona a medias.)_
