@@ -60,8 +60,8 @@ Para desplegar un backend con notificaciones propio, es necesario el archivo JSO
 | `ClientesActivity` | Lista de clientas activas que trae la API, con búsqueda por nombre o DNI | Botón «Ver clientas» de Inicio | — |
 | `AltaClienteActivity` | Formulario de alta de clienta (nombre, teléfono, DNI, dirección, ciudad, notas) | Botón «Nueva Clienta» de `ClientesActivity` | — · Devuelve `RESULT_OK` para que la lista se actualice |
 | `ProductosActivity` | Catálogo de prendas con precio y stock, con filtro Todas / Con stock / Sin stock | Botón «Catálogo de prendas» de `ClientesActivity` | — |
-| `NuevaEntregaActivity` | Elegir clienta y prendas con stock para llevar a prueba | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
-| `ConfirmarEntregaActivity` | Marcar cada prenda como «Se queda» o «Devuelve» y confirmar | _(PENDIENTE — Juliana)_ | _(PENDIENTE)_ |
+| `NuevaEntregaActivity` | Elegir clienta y prendas con stock para llevar a prueba | Botón «Nueva entrega» de InicioActivity | — |
+| `ConfirmarEntregaActivity` | Marcar cada prenda como «Se queda» o «Devuelve» y confirmar | Botón «Confirmar >» de cada entrega abierta en InicioActivity | el extra `idEntrega` (el id de la entrega, un entero) |
 | `FichaClienteActivity` | Datos de contacto de la clienta, saldo actual destacado, historial  de pagos y acceso directo por WhatsApp | Tocar una clienta en `ClientesActivity` | `id` y `nombre` de la clienta |
 | `RegistrarPagoActivity` | Formulario de pago (monto, medio de pago, observación) con validación de saldo | Botón «Registrar Pago» de `FichaClienteActivity` | `cliente_id`, `cliente_nombre` y `saldo_actual` |
 | `InicioActivity` | Botón de logout, saldo pendiente total entre clientas, cantidad de entregas abiertas con información básica de cada una y un botón de «Confirmar», y cantidad de deudores con su nombre y saldo. | Desde el login, después de ingresar | — |
@@ -87,8 +87,12 @@ La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modi
 | POST | `/api/pagos.php` | Registrar un nuevo pago | `RegistrarPagoActivity` |
 | GET | `/api/resumen.php?deudores=1` | Listar nombre y saldo de las clientas con deuda | `InicioActivity` |
 | GET | `/api/entregas.php?estado=` | Listar entregas abiertas | `InicioActivity` |
-
-_(PENDIENTE — Juliana: agregar los de entregas, ficha y pagos cuando estén conectados.)_
+| GET | `/api/entregas.php?id=`  | Trae una entrega con sus prendas |   `ConfirmarCompra`|
+| POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
+| PUT | `/api/confirmar_entrega.php`|Cierra la entrega: indica qué ítems se queda; el resto se devuelve y vuelve al stock | Confirmar compra|
+| POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
+| GET | `/api/clientes.php` | Lista de clientas para elegir (endpoint del integrante 2)  | `NuevaEntrega`|
+| GET | `/api/productos.php?stock=con`| Lista de prendas con stock (endpoint del integrante 2)| `NuevaEntrega`|
 
 ---
 
@@ -131,7 +135,13 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - **Datos no persistentes.** Dado que los datos que se muestran en la pantalla de inicio son de resumen y solo muestran información de la api, se decidió no guardar los mismos en onSaveInstanceState. Al girar la pantalla o volver desde otra actividad, se recargan desde la api para permitir un refresco en caso de haber ocurrido algún cambio externo.
 - **Funcionalidad de Footer compartida.** La pantalla de inicio, igual que la de clientes y productos, utiliza el mismo código para conectar los botones de navegación del footer y proveerles funcionalidad. Este código, guardado en una función externa, permite que cada bóton abra su actividad correspondiente asegurándose que la pantalla activa llame a .finish() después del cambio.
 
-_(PENDIENTE — Juliana: un párrafo por decisión de su módulo.)_
+### Entregas a prueba y confirmación de compra
+- ConfirmarEntregaActivity recibe por extra solo el id de la entrega y vuelve a pedirla a la API (GET entregas.php?id=) en lugar de recibir la entrega completa: por un extra viajan datos chicos, la información siempre es la que tiene el servidor y, como la pantalla se vuelve a pedir cada vez que se crea, sigue funcionando después de girar.
+- Las prendas arrancan todas en «Se queda» y se tocan para cambiarlas; la app no calcula ningún saldo, solo manda los ids de los ítems que se quedan y la API es la que cambia los estados y devuelve el stock en una transacción.
+- El total que se ve en pantalla es solo una vista previa. El botón se desactiva mientras se envía (no se puede confirmar dos veces) y, si la API responde 409 porque la entrega ya estaba cerrada, queda desactivado.
+- Para elegir clienta y prendas se usaron ListView con ArrayAdapter y se resuelve tocando filas, que es lo visto en clase.
+- Todos los errores de la API se muestran con el mensaje que manda el servidor (ApiCliente.mensajeDeError), un 401 vuelve al login con Sesion.vencida y, sin conexión, aparece «No se pudo conectar» sin que la app se cierre.
+- Al girar la pantalla, NuevaEntregaActivity conserva la clienta y las prendas elegidas con onSaveInstanceState, y ConfirmarEntregaActivity conserva cuáles prendas estaban marcadas como «Devuelve».
 
 ## Módulo Clientes y Catálogo — Integrante 2 (Liliana)
 
@@ -167,5 +177,10 @@ _(PENDIENTE — Juliana: un párrafo por decisión de su módulo.)_
 - **Salir sin conexión:** si no hay Internet o el token ya venció, el botón Salir avisa que no pudo cerrar la sesión y no vuelve al login.
 - **Historial en ficha centrado en pagos:** en `FichaClienteActivity` el listado inferior muestra el historial cronológico de pagos registrados (el total de compras confirmadas se refleja en el encabezado del saldo, sin desglosar cada prenda comprada ítem por ítem).
 - **Contacto por WhatsApp vía enlace externo:** el botón de WhatsApp abre el navegador o la app externa mediante `wa.me` con el mensaje prearmado, pero no verifica ni registra en el servidor si el mensaje fue enviado efectivamente.
+- **Una entrega abierta** no se puede editar ni cancelar desde la app: solo se crea y se confirma.
+- En **Confirmar compra** las prendas se identifican por su número y su precio, no por su nombre.
+- En **Nueva entrega** las listas de clientas y prendas no tienen buscador: si hubiera muchas, hay que desplazarse.
+- **La confirmación es de todo o nada:** se decide el destino de todas las prendas de la entrega a la vez.
+
 
 _(PENDIENTE — cada integrante agrega lo que no llegó a hacer o funciona a medias.)_
