@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,12 +92,15 @@ public class InicioActivity extends AppCompatActivity {
                 if (!response.isSuccessful() || response.body() == null) {
                     if (response.code() == 401) {
                         Sesion.vencida(InicioActivity.this);
+                    } else {
+                        String err = ApiCliente.mensajeDeError(response);
+                        Toast.makeText(InicioActivity.this,err,Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
                 RespuestaResumenDeudores respuesta = response.body();
 
-                displayDeudaTotal.setText(res.getString(R.string.monto_generico,String.valueOf(respuesta.total_deuda_general)));
+                displayDeudaTotal.setText(getString(R.string.monto_generico,(float) respuesta.total_deuda_general));
 
                 int cantDeudores = respuesta.deudores.size();
                 String textoDeudores = res.getQuantityString(R.plurals.titulo_cant_deudores,cantDeudores,String.valueOf(cantDeudores));
@@ -127,8 +131,8 @@ public class InicioActivity extends AppCompatActivity {
         disp.addView(nombre);
 
         TextView deuda = new TextView(this);
-        deuda.setText(res.getString(R.string.monto_generico,String.valueOf(infoDeudor.saldo)));
-        deuda.setTextColor(res.getColor(R.color.deuda,null));
+        deuda.setText(getString(R.string.monto_generico, (float) infoDeudor.saldo));
+        deuda.setTextColor(getColor(R.color.deuda));
         deuda.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_TEXT_END);
         disp.addView(deuda);
 
@@ -148,15 +152,40 @@ public class InicioActivity extends AppCompatActivity {
                 if (!response.isSuccessful() || response.body() == null) {
                     if (response.code() == 401) {
                         Sesion.vencida(InicioActivity.this);
+                    } else {
+                        String err = ApiCliente.mensajeDeError(response);
+                        Toast.makeText(InicioActivity.this,err,Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
-                List<Entrega> respuesta = response.body();
-                int cantEntregas = respuesta.size();
+                List<Entrega> entregas = response.body();
+                int cantEntregas = entregas.size();
                 String textoCantEntregas = res.getQuantityString(R.plurals.cant_entregas_abiertas,cantEntregas,String.valueOf(cantEntregas));
                 displayCantEntregas.setText(textoCantEntregas);
-                for (Entrega entrega: respuesta) {
-                    crearElementoEntrega(entrega,displayEntregas);
+                for (Entrega entrega: entregas) {
+                    api.getCliente(entrega.getCliente_id()).enqueue(new Callback<Cliente>() {
+                        @Override
+                        @EverythingIsNonNull
+                        public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                            if (!response.isSuccessful() || response.body() == null) {
+                                if (response.code() == 401) {
+                                    Sesion.vencida(InicioActivity.this);
+                                } else {
+                                    String err = ApiCliente.mensajeDeError(response);
+                                    Toast.makeText(InicioActivity.this,err,Toast.LENGTH_SHORT).show();
+                                }
+                                return;
+                            }
+                            Cliente cliente = response.body();
+                            crearElementoEntrega(entrega,cliente,displayEntregas);
+                        }
+
+                        @Override
+                        @EverythingIsNonNull
+                        public void onFailure(Call<Cliente> call, Throwable throwable) {
+                            crearElementoEntrega(entrega,null,displayEntregas);
+                        }
+                    });
                 }
             }
 
@@ -168,99 +197,85 @@ public class InicioActivity extends AppCompatActivity {
         });
     }
 
-    private void crearElementoEntrega(Entrega entrega, LinearLayout parent) {
+    private void crearElementoEntrega(Entrega entrega, Cliente cliente, LinearLayout parent) {
         Context contextHere = this;
-        api.getCliente(entrega.getCliente_id()).enqueue(new Callback<Cliente>() {
-            @Override
-            @EverythingIsNonNull
-            public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                if (!response.isSuccessful() || response.body() == null) {
-                    if (response.code() == 401) {
-                        Sesion.vencida(InicioActivity.this);
-                    }
-                    return;
-                }
-                Cliente respuesta = response.body();
 
-                //disposicion horizontal.
-                // al lado izquierdo ponemos el nombre y los detalles como otro viewgroup, y al derecho el boton de confirmar
-                LinearLayout dispHorizontal = new LinearLayout(contextHere);
-                dispHorizontal.setOrientation(LinearLayout.HORIZONTAL);
-                dispHorizontal.setLayoutParams(paramsVertical);
-                dispHorizontal.setPadding(0,10,0,0);
-                dispHorizontal.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border,null));
+        //disposicion horizontal.
+        // al lado izquierdo ponemos el nombre y los detalles como otro viewgroup, y al derecho el boton de confirmar
+        LinearLayout dispHorizontal = new LinearLayout(contextHere);
+        dispHorizontal.setOrientation(LinearLayout.HORIZONTAL);
+        dispHorizontal.setLayoutParams(paramsVertical);
+        dispHorizontal.setPadding(0,10,0,0);
+        dispHorizontal.setBackground(ResourcesCompat.getDrawable(res,R.drawable.bg_bottom_border,null));
 
 
-                //disposicion vertical del nombre y los detalles
-                LinearLayout dispVertical = new LinearLayout(contextHere);
-                dispVertical.setOrientation(LinearLayout.VERTICAL);
-                dispVertical.setLayoutParams(paramsHorizontal);
-                dispHorizontal.addView(dispVertical);
+        //disposicion vertical del nombre y los detalles
+        LinearLayout dispVertical = new LinearLayout(contextHere);
+        dispVertical.setOrientation(LinearLayout.VERTICAL);
+        dispVertical.setLayoutParams(paramsHorizontal);
+        dispHorizontal.addView(dispVertical);
 
-                TextView nombre = new TextView(contextHere);
-                nombre.setText(respuesta.nombre);
-                nombre.setLayoutParams(paramsVertical);
-                dispVertical.addView(nombre);
+        TextView nombre = new TextView(contextHere);
+        nombre.setTextSize(17);
+        if (cliente != null) {
+            nombre.setText(cliente.nombre);
+        } else {
+            nombre.setText(R.string.err_carga_cliente_entrega);
+            nombre.setTextSize(14);
+        }
+        nombre.setLayoutParams(paramsVertical);
+        dispVertical.addView(nombre);
 
-                TextView detalles = new TextView(contextHere);
-                detalles.setLayoutParams(paramsVertical);
-                { //uso de parseo y formato de datetime para determinar el string de los detalles
-                    int cantPrendas = entrega.getEntrega_items().size();
+        TextView detalles = new TextView(contextHere);
+        detalles.setTextSize(14);
+        detalles.setLayoutParams(paramsVertical);
+        { //uso de parseo y formato de datetime para determinar el string de los detalles
+            int cantPrendas = entrega.getEntrega_items().size();
 
-                    SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    String fechaFormateada = null;
-                    try {
-                        Date fecha = parser.parse(entrega.getFecha());
-                        assert fecha != null;
-                        fechaFormateada = (String) DateUtils.getRelativeTimeSpanString(fecha.getTime());
-                    } catch (ParseException e) {
-                        fechaFormateada = "Fecha invalida";
-                    }
-                    String textoDetalle = res.getQuantityString(
+            SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            parser.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String fechaFormateada = null;
+            try {
+                Date fecha = parser.parse(entrega.getFecha());
+                assert fecha != null;
+                fechaFormateada = (String) DateUtils.getRelativeTimeSpanString(fecha.getTime());
+            } catch (ParseException e) {
+                fechaFormateada = "Fecha invalida";
+            }
+            String textoDetalle = res.getQuantityString(
                             R.plurals.cant_prendas_entrega,
                             cantPrendas,
                             String.valueOf(cantPrendas),
                             fechaFormateada
                     );
 
-                    detalles.setText(textoDetalle);
-                }
-                dispVertical.addView(detalles);
+            detalles.setText(textoDetalle);
+        }
+        dispVertical.addView(detalles);
 
-                LayoutParams paramsBoton = new LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        0.5f
-                );
-                Button botonConfirmar = new Button(contextHere);
-                botonConfirmar.setText(R.string.btn_confirmar_entrega);
-                botonConfirmar.setLayoutParams(paramsBoton);
-                botonConfirmar.setOnClickListener(v -> {
-                    Intent meta = new Intent(InicioActivity.this,ConfirmarEntregaActivity.class);
-                    meta.putExtra("idEntrega",entrega.getId());
-                    InicioActivity.this.startActivity(meta);
-                });
-                dispHorizontal.addView(botonConfirmar);
-
-
-                nombre.setTextSize(17);
-                detalles.setTextSize(14);
-
-                parent.addView(dispHorizontal);
-            }
-
-            @Override
-            @EverythingIsNonNull
-            public void onFailure(Call<Cliente> call, Throwable throwable) {
-                //Uh oh
-            }
+        LayoutParams paramsBoton = new LayoutParams(
+                0,
+                LayoutParams.MATCH_PARENT,
+                0.5f
+        );
+        Button botonConfirmar = new Button(contextHere);
+        botonConfirmar.setText(R.string.btn_confirmar_entrega);
+        botonConfirmar.setLayoutParams(paramsBoton);
+        botonConfirmar.setOnClickListener(v -> {
+            Intent meta = new Intent(InicioActivity.this,ConfirmarEntregaActivity.class);
+            meta.putExtra("idEntrega",entrega.getId());
+            InicioActivity.this.startActivity(meta);
         });
+        dispHorizontal.addView(botonConfirmar);
+
+        parent.addView(dispHorizontal);
     }
 
     private void hookFuncionesBotones() {
         //emergentes, no llaman a "finish"
         btnEntrega.setOnClickListener(v -> Utils.abrirPagina(this,NuevaEntregaActivity.class));
-        btnRegistrarPago.setOnClickListener(v -> Utils.abrirPagina(this,InicioActivity.class)); //TODO, FALTA REEMPLAZAR CON LA PANTALLA DE REGISTRO DE PAGO
+        //TODO, EN CASO DE QUE REGISTRAR PAGO PUEDA EN ALGUN MOMENTO ABRIRSE SIN EXPLICITAMENTE PASARLE LA CLIENTA, LLAMARLO AQUÍ
+        btnRegistrarPago.setOnClickListener(v -> {});
 
         //abren otra pagina, llaman a finish
         btnVerClientes.setOnClickListener(v -> Utils.abrirPaginaFinish(this,ClientesActivity.class));

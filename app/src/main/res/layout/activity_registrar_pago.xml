@@ -14,13 +14,13 @@
         android:id="@+id/tvTitulo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Registrar Pago"
+        android:text="@string/titulo_registrar_pago"
+        android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Datos de la clienta recibida por extra -->
     <TextView
@@ -40,12 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Saldo adeudado: $0.00"
+        android:textColor="@color/deudaAcentuada"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:textColor="#C62828"
-        app:layout_constraintTop_toBottomOf="@id/tvClientaNombre"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tvClientaNombre" />
 
     <!-- Campo: Monto -->
     <com.google.android.material.textfield.TextInputLayout
@@ -53,10 +53,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Monto a pagar ($)"
-        app:layout_constraintTop_toBottomOf="@id/tvSaldoActual"
+        android:hint="@string/hint_monto_pagar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvSaldoActual">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMonto"
@@ -71,10 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Medio de pago:"
+        android:text="@string/hint_medio_pago"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/tilMonto"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilMonto" />
 
     <!-- Selector de Medio de pago -->
     <Spinner
@@ -92,10 +92,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Observación (opcional)"
-        app:layout_constraintTop_toBottomOf="@id/spMedioPago"
+        android:hint="@string/hint_observacion_pago"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/spMedioPago">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etObservacion"
@@ -121,10 +121,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Guardar Pago"
+        android:text="@string/btn_guardar_pago"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

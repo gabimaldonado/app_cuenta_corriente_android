@@ -65,11 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         // --- Generado por Android Studio: no se toca ---
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        Utils.setupInsetsConPaddingOriginal(this);
 
         // --- Buscar las vistas por su id ---
         etEmail = findViewById(R.id.etEmail);
@@ -127,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<LoginRespuesta> call, Throwable error) {
                         cargando(false);
-                        tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
+                        tvMensaje.setText(getString(R.string.err_conexion_servidor));
                     }
                 });
     }

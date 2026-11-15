@@ -15,12 +15,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Cargando clienta..."
+        android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Teléfono -->
     <TextView
@@ -56,10 +56,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SALDO ACTUAL"
+                android:text="@string/titulo_saldo_clienta"
+                android:textColor="@color/deuda"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#E65100" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSaldoMonto"
@@ -67,9 +67,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="$ 0.00"
+                android:textColor="@color/deudaAcentuada"
                 android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#C62828" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDesgloseTotales"
@@ -98,17 +98,17 @@
             android:id="@+id/btnIrAPagar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:text="Registrar Pago" />
+            android:layout_weight="1"
+            android:text="@string/btn_registrar_pago" />
 
         <Button
             android:id="@+id/btnWhatsapp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="6dp"
-            android:text="WhatsApp" />
+            android:layout_weight="1"
+            android:text="@string/btn_whatsapp" />
     </LinearLayout>
 
     <!-- Subtítulo de historial de pagos -->
@@ -117,13 +117,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Historial de Pagos"
+        android:text="@string/titulo_historial_pagos"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/layoutBotones"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/layoutBotones" />
 
     <!-- Barra de progreso para R5 (retroalimentación de espera) -->
     <ProgressBar

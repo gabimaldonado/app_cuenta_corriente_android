@@ -131,8 +131,34 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - **Datos no persistentes.** Dado que los datos que se muestran en la pantalla de inicio son de resumen y solo muestran información de la api, se decidió no guardar los mismos en onSaveInstanceState. Al girar la pantalla o volver desde otra actividad, se recargan desde la api para permitir un refresco en caso de haber ocurrido algún cambio externo.
 - **Funcionalidad de Footer compartida.** La pantalla de inicio, igual que la de clientes y productos, utiliza el mismo código para conectar los botones de navegación del footer y proveerles funcionalidad. Este código, guardado en una función externa, permite que cada bóton abra su actividad correspondiente asegurándose que la pantalla activa llame a .finish() después del cambio.
 
-_(PENDIENTE — Liliana y Juliana: un párrafo por decisión de su módulo.)_
+_(PENDIENTE — Juliana: un párrafo por decisión de su módulo.)_
 
+## Módulo Clientes y Catálogo — Integrante 2 (Liliana)
+
+### Pantallas implementadas
+
+- **`ClientesActivity` (`activity_clientes.xml`)**
+  - Muestra el listado de clientas activas en un `ListView` a partir del modelo `Cliente.java`, con indicador de estado (`«Cargando…»`) mientras responde la API.
+  - Incluye buscador por nombre o DNI (`?buscar=`) y botones para ir al alta de clienta o al catálogo de prendas.
+  - Al seleccionar una clienta de la lista, abre `FichaClienteActivity` enviando su `id` (y `nombre`) como extra en el `Intent`.
+  - Utiliza `ActivityResultLauncher` para recargar automáticamente el listado al volver de `AltaClienteActivity` con `RESULT_OK`.
+
+- **`AltaClienteActivity` (`activity_alta_cliente.xml`)**
+  - Formulario de registro con validación previa en el cliente antes de enviar: nombre obligatorio, teléfono numérico de 10 a 15 dígitos con código de país y DNI opcional de 7 u 8 dígitos.
+  - Envía los datos mediante `POST` y muestra en pantalla los mensajes de error devueltos por la API a través de `ApiCliente.mensajeDeError(response)` (incluyendo `409`/`400` por DNI duplicado y `422` por ciudad inexistente).
+  - **Requisito R5 (rotación y doble envío):** conserva lo escrito y el mensaje de error visible ante giros de pantalla (`onSaveInstanceState`) y deshabilita el botón de guardado mientras la petición está en curso para evitar envíos duplicados.
+
+- **`ProductosActivity` (`activity_productos.xml`)**
+  - Muestra el catálogo de prendas (`Producto.java`: descripción, talle, color, precio y stock) en un `ListView` con indicador de carga.
+  - Incorpora un `RadioGroup` para filtrar por disponibilidad en la API: **Todas**, **Con stock** y **Sin stock**.
+
+### Endpoints utilizados (`CuentaCorrienteApi.java`)
+
+- `GET api/clientes.php` — Listado general de clientas activas.
+- `GET api/clientes.php?buscar={texto}` — Búsqueda de clientas por nombre o DNI.
+- `POST api/clientes.php` — Alta de una nueva clienta (con geocodificación de ciudad en backend).
+- `GET api/productos.php` — Listado completo del catálogo de prendas.
+- `GET api/productos.php?stock={con|sin}` — Filtrado de prendas con stock disponible (`con`) o sin stock (`sin`).
 ---
 
 ## 7. Limitaciones conocidas

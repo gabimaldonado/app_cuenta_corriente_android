@@ -120,7 +120,7 @@ public class ClientesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Cliente>> call, Throwable t) {
-                tvEstadoClientes.setText("No se pudo conectar con el servidor");
+                tvEstadoClientes.setText(R.string.err_conexion_servidor);
             }
         });
     }
