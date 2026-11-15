@@ -8,6 +8,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.PUT;
 
 // La lista de endpoints de nuestra API.
 // Cada integrante agrega los suyos en su sección.
@@ -31,6 +32,15 @@ public interface CuentaCorrienteApi {
     Call<List <Producto>> obtenerProductos(@Query("stock")String stock);
 
     // --- Integrante 3: entregas ---
+
+    @GET("entregas.php")
+    Call<Entrega> obtenerEntrega(@Query("id") int id);
+
+    @POST("entregas.php")
+    Call<Entrega> crearEntrega(@Body NuevaEntregaPedido datos);
+
+    @PUT("confirmar_entrega.php")
+    Call<ConfirmarEntregaRespuesta> confirmarEntrega(@Body ConfirmarEntregaPedido datos);
 
     // --- Integrante 4: pagos y resumen ---
 
