@@ -89,7 +89,7 @@ La app usa **la misma API del TP N.º 1, sin cambios**: no se agregó ni se modi
 | GET | `/api/entregas.php?estado=` | Listar entregas abiertas | `InicioActivity` |
 | GET | `/api/entregas.php?id=`  | Trae una entrega con sus prendas |   `ConfirmarCompra`|
 | POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
-| PUT | `/api/confirmar_entrega.php`|Cierra la entrega: indica qué ítems se queda; el resto se devuelve y vuelve al stock | Confirmar compra|
+| PUT | `/api/confirmar_entrega.php`|Cierra la entrega: indica qué ítems se queda; el resto se devuelve y vuelve al stock | `ConfirmarCompra`|
 | POST | `/api/entregas.php`     | Crea una entrega: la clienta y los ids de las prendas | `NuevaEntrega`|
 | GET | `/api/clientes.php` | Lista de clientas para elegir (endpoint del integrante 2)  | `NuevaEntrega`|
 | GET | `/api/productos.php?stock=con`| Lista de prendas con stock (endpoint del integrante 2)| `NuevaEntrega`|
