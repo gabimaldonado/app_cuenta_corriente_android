@@ -41,7 +41,9 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical" />
 
     <!-- (3) Prendas con stock: tocar una la agrega -->
     <TextView
@@ -59,7 +61,10 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="2"
+        android:layout_marginBottom="4dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical" />
 
     <!-- (4) Lo que se lleva a probar: tocar una la quita -->
     <TextView
@@ -78,7 +83,9 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical" />
 
     <!-- (5) Total, aviso, botón y mensajes: ocupan sólo lo que necesitan -->
     <LinearLayout
