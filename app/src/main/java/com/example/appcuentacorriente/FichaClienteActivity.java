@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,7 +49,9 @@ public class FichaClienteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ficha_cliente);
+        Utils.setupInsetsConPaddingOriginal(this);
 
         tvNombreCliente = findViewById(R.id.tvNombreCliente);
         tvTelefonoCliente = findViewById(R.id.tvTelefonoCliente);
@@ -111,13 +114,17 @@ public class FichaClienteActivity extends AppCompatActivity {
                         clienteNombre = resumen.getCliente().nombre;
                         clienteTelefono = resumen.getCliente().telefono;
                         tvNombreCliente.setText(clienteNombre);
-                        tvTelefonoCliente.setText("Teléfono: " + (clienteTelefono != null ? clienteTelefono : "-"));
+                        String strTelefono = getString(R.string.telefono_clienta,(clienteTelefono != null ? clienteTelefono : "-"));
+                        tvTelefonoCliente.setText(strTelefono);
                     }
                     saldoActual = resumen.getSaldo_actual();
 
-                    tvSaldoMonto.setText(String.format("$ %.2f", saldoActual));
-                    tvDesgloseTotales.setText(String.format("Compras: $%.2f | Pagos: $%.2f",
-                            resumen.getTotal_compras(), resumen.getTotal_pagos()));
+                    String strMontoTotal = getString(R.string.monto_generico,(float) saldoActual);
+                    String strCompras = getString(R.string.monto_generico,(float) resumen.getTotal_compras());
+                    String strPagos = getString(R.string.monto_generico,(float) resumen.getTotal_pagos());
+                    String desglose = getString(R.string.desglose_saldo_clienta,strCompras,strPagos);
+                    tvSaldoMonto.setText(strMontoTotal);
+                    tvDesgloseTotales.setText(desglose);
 
                     // Mostrar lista de pagos
                     List<String> listadoTextos = new ArrayList<>();

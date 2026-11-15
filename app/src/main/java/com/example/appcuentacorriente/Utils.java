@@ -1,10 +1,9 @@
 package com.example.appcuentacorriente;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,7 +27,7 @@ public class Utils {
         //para agregar el inset necesario y que no haya sobreposicion con los elementos del sistema
         // Esta funcion de utilidad guarda el padding original del layout y se lo agrega encima del "inset",
         //para que se conserve
-        LinearLayout main = activity.findViewById(R.id.main);
+        View main = activity.findViewById(R.id.main);
         int paddingLeft,paddingTop,paddingRight,paddingBottom;
         paddingLeft = main.getPaddingLeft();
         paddingTop = main.getPaddingTop();

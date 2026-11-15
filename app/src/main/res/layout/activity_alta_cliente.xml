@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,63 +13,63 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/titulo_alta_cliente"
             android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etNombreCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
             android:hint="@string/hint_nombre_cliente"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etTelefonoCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:minHeight="48dp"
             android:hint="@string/hint_telefono_cliente"
-            android:inputType="number" />
+            android:inputType="number"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etDniCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:minHeight="48dp"
             android:hint="@string/hint_dni_cliente"
-            android:inputType="number" />
+            android:inputType="number"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etDireccionCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:minHeight="48dp"
             android:hint="@string/hint_direccion_cliente"
-            android:inputType="textPostalAddress" />
+            android:inputType="textPostalAddress"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etCiudadCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:minHeight="48dp"
             android:hint="@string/hint_ciudad_cliente"
-            android:inputType="textCapWords" />
+            android:inputType="textCapWords"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etNotasCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:minHeight="48dp"
             android:hint="@string/hint_notas_cliente"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:minHeight="48dp" />
 
         <TextView
             android:id="@+id/tvErrorAlta"
