@@ -2,7 +2,8 @@
     <!-- Generico (strings que se pueden compartir entre pantallas) -->
     <string name="estado_cargando">Cargando…</string>
     <string name="err_carga">Error de carga</string>
-    <string name="monto_generico">$ %1$s</string>
+    <string name="err_conexion_servidor">No se pudo conectar con el servidor. Revisa tu conexion.</string>
+    <string name="monto_generico">$ %1$,.2f</string>
     <string name="footer_inicio">Inicio</string>
     <string name="footer_clientes">Clientas</string>
     <string name="footer_prendas">Prendas</string>
@@ -60,6 +61,23 @@
     <string name="filtro_con_stock">Con stock</string>
     <string name="filtro_sin_stock">Sin stock</string>
     <string name="estado_sin_productos">No hay prendas para mostrar</string>
+
+    <!-- Ficha Cliente -->
+    <string name="titulo_saldo_clienta">SALDO ACTUAL</string>
+    <string name="titulo_historial_pagos">Historial de Pagos</string>
+    <string name="btn_whatsapp">WhatsApp</string>
+    <string name="telefono_clienta">Teléfono: %1$s</string>
+    <string name="desglose_saldo_clienta">Compras: %1$s | Pagos: %2$s</string>
+
+    <!-- Registrar Pago -->
+    <string name="titulo_registrar_pago">Registrar Pago</string>
+    <string name="btn_guardar_pago">Guardar Pago</string>
+    <string name="hint_medio_pago">Medio de pago:</string>
+    <string name="deuda_registro_pago">Saldo adeudado: %1$s</string>
+    <string name="display_nombre_clienta">Clienta: %1$s</string>
+    <string name="display_id_clienta">Clienta ID: %1$s</string>
+    <string name="hint_observacion_pago">Observación (opcional)</string>
+    <string name="hint_monto_pagar">Monto a pagar ($)</string>
 
     <!-- Entregas a prueba NuevaEntregaActivity -->
     <string name="entrega_titulo_nueva">Nueva entrega</string>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,7 +98,7 @@ public class InicioActivity extends AppCompatActivity {
                 }
                 RespuestaResumenDeudores respuesta = response.body();
 
-                displayDeudaTotal.setText(res.getString(R.string.monto_generico,String.valueOf(respuesta.total_deuda_general)));
+                displayDeudaTotal.setText(getString(R.string.monto_generico,(float) respuesta.total_deuda_general));
 
                 int cantDeudores = respuesta.deudores.size();
                 String textoDeudores = res.getQuantityString(R.plurals.titulo_cant_deudores,cantDeudores,String.valueOf(cantDeudores));
@@ -127,8 +129,8 @@ public class InicioActivity extends AppCompatActivity {
         disp.addView(nombre);
 
         TextView deuda = new TextView(this);
-        deuda.setText(res.getString(R.string.monto_generico,String.valueOf(infoDeudor.saldo)));
-        deuda.setTextColor(res.getColor(R.color.deuda,null));
+        deuda.setText(getString(R.string.monto_generico, (float) infoDeudor.saldo));
+        deuda.setTextColor(getColor(R.color.deuda));
         deuda.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_TEXT_END);
         disp.addView(deuda);
 
@@ -208,6 +210,7 @@ public class InicioActivity extends AppCompatActivity {
                     int cantPrendas = entrega.getEntrega_items().size();
 
                     SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    parser.setTimeZone(TimeZone.getTimeZone("UTC"));
                     String fechaFormateada = null;
                     try {
                         Date fecha = parser.parse(entrega.getFecha());
@@ -260,7 +263,8 @@ public class InicioActivity extends AppCompatActivity {
     private void hookFuncionesBotones() {
         //emergentes, no llaman a "finish"
         btnEntrega.setOnClickListener(v -> Utils.abrirPagina(this,NuevaEntregaActivity.class));
-        btnRegistrarPago.setOnClickListener(v -> Utils.abrirPagina(this,InicioActivity.class)); //TODO, FALTA REEMPLAZAR CON LA PANTALLA DE REGISTRO DE PAGO
+        //TODO, EN CASO DE QUE REGISTRAR PAGO PUEDA EN ALGUN MOMENTO ABRIRSE SIN EXPLICITAMENTE PASARLE LA CLIENTA, LLAMARLO AQUÍ
+        btnRegistrarPago.setOnClickListener(v -> {});
 
         //abren otra pagina, llaman a finish
         btnVerClientes.setOnClickListener(v -> Utils.abrirPaginaFinish(this,ClientesActivity.class));

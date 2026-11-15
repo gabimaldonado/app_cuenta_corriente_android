@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,7 +31,9 @@ public class AltaClienteActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_alta_cliente);
+        Utils.setupInsetsConPaddingOriginal(this);
 
         etNombre = findViewById(R.id.etNombreCliente);
         etTelefono = findViewById(R.id.etTelefonoCliente);
@@ -111,7 +114,7 @@ public class AltaClienteActivity extends AppCompatActivity  {
             public void onFailure(Call<Cliente> call, Throwable t) {
                 enviando = false;
                 btnGuardar.setEnabled(true);
-                mostrarError("No se pudo conectar con el servidor");
+                mostrarError(getString(R.string.err_conexion_servidor));
             }
         });
     }

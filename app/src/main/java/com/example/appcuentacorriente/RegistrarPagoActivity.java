@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,7 +36,9 @@ public class RegistrarPagoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registrar_pago);
+        Utils.setupInsetsConPaddingOriginal(this);
 
         //Vincular componentes de la vista XML
         tvClientaNombre = findViewById(R.id.tvClientaNombre);
@@ -58,11 +61,16 @@ public class RegistrarPagoActivity extends AppCompatActivity {
         saldoActual = intent.getDoubleExtra("cliente_saldo", 0.0);
 
         if (clienteNombre != null) {
-            tvClientaNombre.setText("Clienta: " + clienteNombre);
+            tvClientaNombre.setText(getString(R.string.display_nombre_clienta,clienteNombre));
         } else {
-            tvClientaNombre.setText("Clienta ID: " + clienteId);
+            tvClientaNombre.setText(getString(R.string.display_id_clienta,String.valueOf(clienteId)));
         }
-        tvSaldoActual.setText(String.format("Saldo adeudado: $%.2f", saldoActual));
+        String strSaldoAdeudado = getString(
+                R.string.deuda_registro_pago,getString(
+                        R.string.monto_generico, (float) saldoActual
+                )
+        );
+        tvSaldoActual.setText(strSaldoAdeudado);
 
         // Acción del botón de confirmación
         btnConfirmarPago.setOnClickListener(v -> intentarRegistrarPago());
@@ -127,7 +135,7 @@ public class RegistrarPagoActivity extends AppCompatActivity {
             public void onFailure(Call<Void> call, Throwable t) {
                 // Manejo sin cierres con modo avión o API caída
                 mostrarCargando(false);
-                Toast.makeText(RegistrarPagoActivity.this, "No se pudo conectar con el servidor. Revise su conexión.", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegistrarPagoActivity.this, getString(R.string.err_conexion_servidor), Toast.LENGTH_LONG).show();
             }
         });
     }

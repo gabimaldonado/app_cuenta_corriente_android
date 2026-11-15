@@ -78,7 +78,7 @@ public class ProductosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Producto>> call, Throwable t) {
-                tvEstadoProductos.setText("No se pudo conectar con el servidor");
+                tvEstadoProductos.setText(getString(R.string.err_conexion_servidor));
             }
         });
     }

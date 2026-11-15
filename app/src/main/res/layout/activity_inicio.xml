@@ -111,6 +111,7 @@
                     android:minHeight="0dp"
                     android:padding="7dp"
                     android:text="@string/btn_registrar_pago"
+                    android:visibility="gone"
                     app:cornerRadius="10dp" />
             </LinearLayout>
 
