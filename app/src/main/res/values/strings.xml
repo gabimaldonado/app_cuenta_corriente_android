@@ -24,6 +24,7 @@
     <string name="titulo_prendas_prueba">Prendas a prueba</string>
     <string name="titulo_mas_deudores">Las que más te deben</string>
     <string name="btn_ver_deudores">Ver Todos</string>
+    <string name="err_carga_cliente_entrega">Error de carga del nombre del cliente</string>
 
     <plurals name="titulo_cant_deudores">
         <item quantity="one">Entre %1$s clienta con saldo pendiente</item>
