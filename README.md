@@ -177,3 +177,5 @@ A futuro, si se fuera a modificar el backend mas a fondo, sería posible enviar 
 - En **Confirmar compra** las prendas se identifican por su número y su precio, no por su nombre.
 - En **Nueva entrega** las listas de clientas y prendas no tienen buscador: si hubiera muchas, hay que desplazarse.
 - **La confirmación es de todo o nada:** se decide el destino de todas las prendas de la entrega a la vez.
+- **Editar y dar de baja** clientas y prendas no está en la app: esas tareas se hacen desde el frontend web, que usa la misma API.
+- **El APK es de depuración** (firmado con la clave de prueba de Android Studio). Al instalarlo, Android o Play Protect pueden avisar que la app es de origen desconocido y algún antivirus puede marcarla por error; la app solo pide los permisos de Internet y notificaciones.
