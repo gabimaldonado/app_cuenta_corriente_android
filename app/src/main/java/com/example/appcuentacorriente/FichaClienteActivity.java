@@ -70,7 +70,7 @@ public class FichaClienteActivity extends AppCompatActivity {
         }
 
         if (clienteId == -1) {
-            Toast.makeText(this, "ID de clienta no recibido", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.err_id_clienta, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -87,10 +87,10 @@ public class FichaClienteActivity extends AppCompatActivity {
         // Configurar Intent implícito para abrir WhatsApp
         btnWhatsapp.setOnClickListener(v -> {
             if (clienteTelefono.isEmpty()) {
-                Toast.makeText(this, "La clienta no tiene teléfono registrado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.err_sin_telefono, Toast.LENGTH_SHORT).show();
                 return;
             }
-            String mensaje = "Hola " + clienteNombre + ", tu saldo actual es de $" + saldoActual;
+            String mensaje = getString(R.string.msg_whatsapp_saldo, clienteNombre, String.valueOf(saldoActual));
             String url = "https://wa.me/" + clienteTelefono.replace("+", "").replace(" ", "") + "?text=" + Uri.encode(mensaje);
             Intent sendIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(sendIntent);
@@ -130,10 +130,10 @@ public class FichaClienteActivity extends AppCompatActivity {
                     List<String> listadoTextos = new ArrayList<>();
                     if (resumen.getPagos() != null && !resumen.getPagos().isEmpty()) {
                         for (Pago p : resumen.getPagos()) {
-                            listadoTextos.add(String.format("%s: $%.2f (%s)", p.getFecha(), p.getMonto(), p.getMedio()));
+                            listadoTextos.add(getString(R.string.pago_historial_item, p.getFecha(), p.getMonto(), p.getMedio()));
                         }
                     } else {
-                        listadoTextos.add("No registra pagos previos.");
+                        listadoTextos.add(getString(R.string.pagos_sin_registros));
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -144,7 +144,7 @@ public class FichaClienteActivity extends AppCompatActivity {
                     lvPagos.setAdapter(adapter);
 
                 } else if (response.code() == 404) {
-                    Toast.makeText(FichaClienteActivity.this, "Clienta no encontrada en la API", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FichaClienteActivity.this, R.string.err_clienta_no_encontrada, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(FichaClienteActivity.this, ApiCliente.mensajeDeError(response), Toast.LENGTH_SHORT).show();
                 }
@@ -153,7 +153,7 @@ public class FichaClienteActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Resumen> call, Throwable t) {
                 pbCargando.setVisibility(View.GONE);
-                Toast.makeText(FichaClienteActivity.this, "No se pudo conectar con el servidor", Toast.LENGTH_LONG).show();
+                Toast.makeText(FichaClienteActivity.this, R.string.err_conexion_corto, Toast.LENGTH_LONG).show();
             }
         });
     }

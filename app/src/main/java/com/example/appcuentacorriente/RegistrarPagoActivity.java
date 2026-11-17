@@ -81,7 +81,7 @@ public class RegistrarPagoActivity extends AppCompatActivity {
 
         //Validación antes de enviar (en el cliente)
         if (montoTexto.isEmpty()) {
-            etMonto.setError("Ingrese un monto válido");
+            etMonto.setError(getString(R.string.err_monto_vacio));
             return;
         }
 
@@ -89,17 +89,17 @@ public class RegistrarPagoActivity extends AppCompatActivity {
         try {
             monto = Double.parseDouble(montoTexto);
         } catch (NumberFormatException e) {
-            etMonto.setError("Monto inválido");
+            etMonto.setError(getString(R.string.err_monto_invalido));
             return;
         }
 
         if (monto <= 0) {
-            etMonto.setError("El monto debe ser mayor a 0");
+            etMonto.setError(getString(R.string.err_monto_cero));
             return;
         }
 
         if (saldoActual > 0 && monto > saldoActual) {
-            etMonto.setError("El monto no puede superar el saldo adeudado ($" + saldoActual + ")");
+            etMonto.setError(getString(R.string.err_monto_supera_saldo, String.valueOf(saldoActual)));
             return;
         }
 
@@ -120,14 +120,14 @@ public class RegistrarPagoActivity extends AppCompatActivity {
                 mostrarCargando(false);
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(RegistrarPagoActivity.this, "¡Pago registrado correctamente!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrarPagoActivity.this, R.string.msg_pago_registrado, Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
                 } else {
                     // Leer el error real que manda Railway (400, 422, 500, etc.)
                     String mensajeError = ApiCliente.mensajeDeError(response);
                     android.util.Log.e("PAGO_API_ERROR", "Código HTTP: " + response.code() + " | Mensaje: " + mensajeError);
-                    Toast.makeText(RegistrarPagoActivity.this, "Error " + response.code() + ": " + mensajeError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrarPagoActivity.this, getString(R.string.err_api_codigo, response.code(), mensajeError), Toast.LENGTH_LONG).show();
                 }
             }
 

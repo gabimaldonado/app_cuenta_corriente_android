@@ -104,7 +104,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
         // Por el extra llega SOLO el id de la entrega
         int idEntrega = getIntent().getIntExtra(EXTRA_ENTREGA_ID, ID_PRUEBA);
         if (idEntrega <= 0) {
-            tvMensaje.setText("Falta el id de la entrega");
+            tvMensaje.setText(R.string.err_falta_id_entrega);
             return;
         }
         cargarEntrega(idEntrega); // al abrir (y al girar), la entrega se pide a la API
@@ -112,7 +112,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
 
     // GET entregas.php?id=...: trae la entrega con sus prendas
     private void cargarEntrega(int idEntrega) {
-        tvEntrega.setText("Cargando…");
+        tvEntrega.setText(R.string.estado_cargando);
         ApiCliente.get(this).obtenerEntrega(idEntrega).enqueue(new Callback<Entrega>() {
 
             @Override
@@ -135,14 +135,14 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
             public void onFailure(Call<Entrega> call, Throwable error) {
                 Log.e(TAG, "No se pudo cargar la entrega", error);
                 tvEntrega.setText("");
-                tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
+                tvMensaje.setText(R.string.err_conexion_servidor);
             }
         });
     }
 
     // Cuando llegó la entrega: arma la lista y activa el botón
     private void mostrarEntrega() {
-        tvEntrega.setText("Entrega " + entrega.getId() + " · " + entrega.getFecha());
+        tvEntrega.setText(getString(R.string.entrega_titulo_detalle, entrega.getId(), entrega.getFecha()));
 
         items = entrega.getEntrega_items();
         if (items == null) {
@@ -156,7 +156,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
         }
 
         if ("cerrada".equals(entrega.getEstado())) {
-            tvMensaje.setText("Esta entrega ya estaba cerrada");
+            tvMensaje.setText(R.string.entrega_ya_cerrada);
         } else {
             btnConfirmar.setEnabled(true);
         }
@@ -174,20 +174,20 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
             EntregaItem item = items.get(i);
             String estado;
             if (seQueda[i]) {
-                estado = "Se queda";
+                estado = getString(R.string.entrega_estado_queda);
                 quedan++;
                 total += item.getPrecio_unitario();
             } else {
-                estado = "Devuelve";
+                estado = getString(R.string.entrega_estado_devuelve);
                 devuelven++;
             }
-            filas.add(estado + " · Prenda " + item.getProducto_id()
-                    + " · $ " + Math.round(item.getPrecio_unitario()));
+            filas.add(getString(R.string.entrega_fila_prenda, estado, item.getProducto_id(),
+                    Math.round(item.getPrecio_unitario())));
         }
 
         adaptador.notifyDataSetChanged(); // le avisa al ListView que sus datos cambiaron
-        tvResumen.setText("Se queda " + quedan + " · Devuelve " + devuelven);
-        tvTotalCompra.setText("Se suma al saldo: $ " + Math.round(total));
+        tvResumen.setText(getString(R.string.entrega_resumen, quedan, devuelven));
+        tvTotalCompra.setText(getString(R.string.entrega_suma_saldo, Math.round(total)));
     }
 
     // PUT confirmar_entrega.php: manda los ids de los ítems que se quedan
@@ -217,8 +217,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
                         if (respuesta.isSuccessful() && respuesta.body() != null) {
                             ConfirmarEntregaRespuesta datos = respuesta.body();
                             Toast.makeText(ConfirmarEntregaActivity.this,
-                                    "Entrega confirmada: se queda " + datos.comprados
-                                            + ", devuelve " + datos.devueltos,
+                                    getString(R.string.msg_entrega_confirmada, datos.comprados, datos.devueltos),
                                     Toast.LENGTH_LONG).show();
 
                             // Volver con resultado, para que la pantalla anterior se actualice
@@ -242,7 +241,7 @@ public class ConfirmarEntregaActivity extends AppCompatActivity {
                     public void onFailure(Call<ConfirmarEntregaRespuesta> call, Throwable error) {
                         cargando(false);
                         Log.e(TAG, "No se pudo confirmar la entrega", error);
-                        tvMensaje.setText("No se pudo conectar con el servidor. La entrega no se confirmó.");
+                        tvMensaje.setText(R.string.err_conexion_no_confirmo);
                     }
                 });
     }

@@ -39,7 +39,7 @@ public class Sesion {
     //     if (respuesta.code() == 401) { Sesion.vencida(MiActivity.this); return; }
     public static void vencida(Activity pantalla) {
         cerrar(pantalla);
-        Toast.makeText(pantalla, "Tu sesión venció. Ingresá de nuevo.", Toast.LENGTH_LONG).show();
+        Toast.makeText(pantalla, R.string.msg_sesion_vencida, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(pantalla, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pantalla.startActivity(intent);

@@ -110,7 +110,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
         mostrarClienta();
 
         // Al abrir (y al girar), las dos listas se piden a la API
-        tvMensaje.setText("Cargando clientas y prendas…");
+        tvMensaje.setText(R.string.entrega_cargando_listas);
         cargarClientas();
         cargarPrendas();
     }
@@ -149,7 +149,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Cliente>> call, Throwable error) {
                 Log.e(TAG, "No se pudieron cargar las clientas", error);
-                tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
+                tvMensaje.setText(R.string.err_conexion_servidor);
             }
         });
     }
@@ -186,7 +186,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Producto>> call, Throwable error) {
                 Log.e(TAG, "No se pudieron cargar las prendas", error);
-                tvMensaje.setText("No se pudo conectar con el servidor. Revisá tu conexión.");
+                tvMensaje.setText(R.string.err_conexion_servidor);
             }
         });
     }
@@ -204,7 +204,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
         if (clientaElegida == null) {
             tvClientaElegida.setText(R.string.entrega_clienta_sin_elegir);
         } else {
-            tvClientaElegida.setText("Clienta: " + clientaElegida.nombre);
+            tvClientaElegida.setText(getString(R.string.entrega_clienta_elegida, clientaElegida.nombre));
         }
     }
 
@@ -217,19 +217,19 @@ public class NuevaEntregaActivity extends AppCompatActivity {
         for (Producto prenda : elegidas) {
             total += prenda.precio;
         }
-        tvTituloElegidas.setText("Se lleva a probar (" + elegidas.size() + ") · tocá para quitar");
-        tvTotal.setText("Total a prueba: $ " + Math.round(total));
+        tvTituloElegidas.setText(getString(R.string.entrega_titulo_elegidas_cant, elegidas.size()));
+        tvTotal.setText(getString(R.string.entrega_total, Math.round(total)));
     }
 
     // POST entregas.php: crea la entrega con la clienta y los ids de las prendas
     private void guardar() {
         // 1. Validar antes de enviar nada
         if (clientaElegida == null) {
-            tvMensaje.setText("Elegí una clienta de la lista");
+            tvMensaje.setText(R.string.err_elegir_clienta);
             return;
         }
         if (elegidas.isEmpty()) {
-            tvMensaje.setText("Agregá al menos una prenda");
+            tvMensaje.setText(R.string.err_elegir_prenda);
             return;
         }
 
@@ -255,7 +255,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
                         cargando(false);
                         if (respuesta.isSuccessful() && respuesta.body() != null) {
                             Toast.makeText(NuevaEntregaActivity.this,
-                                    "Entrega guardada: " + elegidas.size() + " prendas a prueba",
+                                    getString(R.string.msg_entrega_guardada, elegidas.size()),
                                     Toast.LENGTH_LONG).show();
                             setResult(RESULT_OK);
                             finish();
@@ -269,7 +269,7 @@ public class NuevaEntregaActivity extends AppCompatActivity {
                     public void onFailure(Call<Entrega> call, Throwable error) {
                         cargando(false);
                         Log.e(TAG, "No se pudo guardar la entrega", error);
-                        tvMensaje.setText("No se pudo conectar con el servidor. La entrega no se guardó.");
+                        tvMensaje.setText(R.string.err_conexion_no_guardo);
                     }
                 });
     }

@@ -14,7 +14,7 @@
         android:id="@+id/tvNombreCliente"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cargando clienta..."
+        android:text="@string/estado_cargando"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Teléfono: -"
+        android:text="@string/ficha_telefono_vacio"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/tvNombreCliente"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="$ 0.00"
+                android:text="@string/monto_cero"
                 android:textColor="@color/deudaAcentuada"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Compras: $0.00 | Pagos: $0.00"
+                android:text="@string/ficha_desglose_cero"
                 android:textSize="13sp"
                 android:textColor="#555555" />
         </LinearLayout>

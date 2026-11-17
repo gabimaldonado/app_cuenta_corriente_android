@@ -96,4 +96,54 @@
     <string name="entrega_suma_saldo_cero">Se suma al saldo: $ 0</string>
     <string name="entrega_btn_confirmar">Confirmar y actualizar saldo</string>
 
+    <!-- Mensajes que arma el código Java -->
+    <string name="err_email_invalido">Email inválido</string>
+    <string name="err_password_obligatoria">La contraseña es obligatoria</string>
+    <string name="msg_bienvenida">¡Bienvenida!</string>
+    <string name="msg_sesion_vencida">Tu sesión venció. Ingresá de nuevo.</string>
+    <string name="fecha_invalida">Fecha inválida</string>
+    <string name="msg_cerrando_sesion">Cerrando sesión…</string>
+    <string name="err_cerrar_sesion">No se pudo cerrar la sesión</string>
+    <string name="msg_sesion_cerrada">Sesión cerrada</string>
+    <string name="err_nombre_obligatorio">El nombre es obligatorio</string>
+    <string name="err_telefono_invalido">El teléfono debe tener entre 10 y 15 dígitos, con código de país (ej: 5492914000001)</string>
+    <string name="err_dni_invalido">El DNI debe tener 7 u 8 dígitos</string>
+    <string name="msg_clienta_registrada">Clienta registrada con éxito</string>
+    <string name="msg_clienta_elegida">Clienta: %1$s (id=%2$d)</string>
+    <string name="err_id_clienta">ID de clienta no recibido</string>
+    <string name="err_sin_telefono">La clienta no tiene teléfono registrado</string>
+    <string name="msg_whatsapp_saldo">Hola %1$s, tu saldo actual es de $%2$s</string>
+    <string name="pago_historial_item">%1$s: $%2$.2f (%3$s)</string>
+    <string name="pagos_sin_registros">No registra pagos previos.</string>
+    <string name="err_clienta_no_encontrada">Clienta no encontrada en la API</string>
+    <string name="err_conexion_corto">No se pudo conectar con el servidor</string>
+    <string name="err_monto_vacio">Ingrese un monto válido</string>
+    <string name="err_monto_invalido">Monto inválido</string>
+    <string name="err_monto_cero">El monto debe ser mayor a 0</string>
+    <string name="err_monto_supera_saldo">El monto no puede superar el saldo adeudado ($%1$s)</string>
+    <string name="msg_pago_registrado">¡Pago registrado correctamente!</string>
+    <string name="err_api_codigo">Error %1$d: %2$s</string>
+    <string name="err_falta_id_entrega">Falta el id de la entrega</string>
+    <string name="entrega_titulo_detalle">Entrega %1$d · %2$s</string>
+    <string name="entrega_ya_cerrada">Esta entrega ya estaba cerrada</string>
+    <string name="entrega_estado_queda">Se queda</string>
+    <string name="entrega_estado_devuelve">Devuelve</string>
+    <string name="entrega_fila_prenda">%1$s · Prenda %2$d · $ %3$d</string>
+    <string name="entrega_resumen">Se queda %1$d · Devuelve %2$d</string>
+    <string name="entrega_suma_saldo">Se suma al saldo: $ %1$d</string>
+    <string name="msg_entrega_confirmada">Entrega confirmada: se queda %1$d, devuelve %2$d</string>
+    <string name="err_conexion_no_confirmo">No se pudo conectar con el servidor. La entrega no se confirmó.</string>
+    <string name="entrega_cargando_listas">Cargando clientas y prendas…</string>
+    <string name="entrega_clienta_elegida">Clienta: %1$s</string>
+    <string name="entrega_titulo_elegidas_cant">Se lleva a probar (%1$d) · tocá para quitar</string>
+    <string name="entrega_total">Total a prueba: $ %1$d</string>
+    <string name="err_elegir_clienta">Elegí una clienta de la lista</string>
+    <string name="err_elegir_prenda">Agregá al menos una prenda</string>
+    <string name="msg_entrega_guardada">Entrega guardada: %1$d prendas a prueba</string>
+    <string name="err_conexion_no_guardo">No se pudo conectar con el servidor. La entrega no se guardó.</string>
+    <string name="ficha_telefono_vacio">Teléfono: -</string>
+    <string name="monto_cero">$ 0.00</string>
+    <string name="ficha_desglose_cero">Compras: $0.00 | Pagos: $0.00</string>
+    <string name="pago_saldo_cero">Saldo adeudado: $0.00</string>
+
 </resources>

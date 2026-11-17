@@ -84,7 +84,7 @@ public class ClientesActivity extends AppCompatActivity {
                 intent.putExtra("nombre", clienta.nombre);
                 startActivity(intent);
             } catch (ClassNotFoundException e) {
-                Toast.makeText(this, "Clienta: " + clienta.nombre + " (id=" + clienta.id + ")", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_clienta_elegida, clienta.nombre, clienta.id), Toast.LENGTH_SHORT).show();
             }
         });
 

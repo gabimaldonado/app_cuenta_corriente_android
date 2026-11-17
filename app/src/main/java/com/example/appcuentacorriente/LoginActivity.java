@@ -87,12 +87,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // 1. Validar antes de enviar nada
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Email inválido");
+            etEmail.setError(getString(R.string.err_email_invalido));
             etEmail.requestFocus();
             return;
         }
         if (password.isEmpty()) {
-            etPassword.setError("La contraseña es obligatoria");
+            etPassword.setError(getString(R.string.err_password_obligatoria));
             etPassword.requestFocus();
             return;
         }
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (respuesta.isSuccessful() && respuesta.body() != null) {
                             LoginRespuesta datos = respuesta.body();
                             Sesion.guardar(LoginActivity.this, datos.token, datos.nombre);
-                            Toast.makeText(LoginActivity.this, "¡Bienvenida!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.msg_bienvenida, Toast.LENGTH_SHORT).show();
 
                             irAlMenu();
                         } else {

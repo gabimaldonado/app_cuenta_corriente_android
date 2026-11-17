@@ -240,7 +240,7 @@ public class InicioActivity extends AppCompatActivity {
                 assert fecha != null;
                 fechaFormateada = (String) DateUtils.getRelativeTimeSpanString(fecha.getTime());
             } catch (ParseException e) {
-                fechaFormateada = "Fecha invalida";
+                fechaFormateada = getString(R.string.fecha_invalida);
             }
             String textoDetalle = res.getQuantityString(
                             R.plurals.cant_prendas_entrega,
@@ -284,26 +284,26 @@ public class InicioActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        Toast.makeText(InicioActivity.this, "Cerrando sesión...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(InicioActivity.this, R.string.msg_cerrando_sesion, Toast.LENGTH_SHORT).show();
         btnSalir.setEnabled(false);
         api.cerrarSesion().enqueue(new Callback<Void>() {
             @Override
             @EverythingIsNonNull
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(InicioActivity.this, "No se pudo cerrar la sesión", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InicioActivity.this, R.string.err_cerrar_sesion, Toast.LENGTH_SHORT).show();
                     btnSalir.setEnabled(true);
                     return;
                 }
                 Sesion.cerrar(InicioActivity.this);
-                Toast.makeText(InicioActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InicioActivity.this, R.string.msg_sesion_cerrada, Toast.LENGTH_SHORT).show();
                 Utils.abrirPaginaFinish(InicioActivity.this,LoginActivity.class);
             }
 
             @Override
             @EverythingIsNonNull
             public void onFailure(Call<Void> call, Throwable throwable) {
-                Toast.makeText(InicioActivity.this, "No se pudo cerrar la sesión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InicioActivity.this, R.string.err_cerrar_sesion, Toast.LENGTH_SHORT).show();
                 btnSalir.setEnabled(true);
             }
         });

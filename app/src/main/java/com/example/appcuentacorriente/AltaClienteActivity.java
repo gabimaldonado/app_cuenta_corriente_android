@@ -77,15 +77,15 @@ public class AltaClienteActivity extends AppCompatActivity  {
         String notas = etNotas.getText().toString().trim();
 
         if (nombre.isEmpty()) {
-            mostrarError("El nombre es obligatorio");
+            mostrarError(getString(R.string.err_nombre_obligatorio));
             return;
         }
         if (!telefono.matches("^\\d{10,15}$")) {
-            mostrarError("El teléfono debe tener entre 10 y 15 dígitos, con código de país (ej: 5492914000001)");
+            mostrarError(getString(R.string.err_telefono_invalido));
             return;
         }
         if (!dni.isEmpty() && !dni.matches("^\\d{7,8}$")) {
-            mostrarError("El DNI debe tener 7 u 8 dígitos");
+            mostrarError(getString(R.string.err_dni_invalido));
             return;
         }
 
@@ -102,7 +102,7 @@ public class AltaClienteActivity extends AppCompatActivity  {
                 btnGuardar.setEnabled(true);
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(AltaClienteActivity.this, "Clienta registrada con éxito", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AltaClienteActivity.this, R.string.msg_clienta_registrada, Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_OK);
                     finish();
                 } else {
